@@ -1,7 +1,11 @@
 <resources>
-    <string name="app_name">Project1</string>
-    <string name="username_hint">Username</string>
-    <string name="password_hint">Password</string>
-    <string name="btn_signup">Signup</string>
-    <string name="btn_login">Login</string>
+    <string name="app_name">Cecs453Project1</string>
+    <string name="username">User name</string>
+    <string name="password">Password</string>
+    <string name="signup">Signup</string>
+    <string name="login">Login</string>
+    <string name="retypepassword">Retype Password</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="signmeup">Sign me up!</string>
 </resources>
