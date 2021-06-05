@@ -1,10 +1,9 @@
 /*
     Assignment1
     Written by:
-        Arjang Fahim 098765432
-        Arjang Fahim 123455678
-
-
+        Ly Do
+        Ruddy Castro
+        Ivy Nguyen
  */
 
 package com.example.project1;
