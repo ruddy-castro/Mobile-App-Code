@@ -78,8 +78,9 @@ public class Signup extends AppCompatActivity {
                     return;
                 }
 
-
-
+                // Transition to login activity once validation is done
+                Intent signup = new Intent(getApplicationContext(), Login.class);
+                startActivity(signup);
             }
         });
     }
