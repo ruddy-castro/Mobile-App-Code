@@ -8,4 +8,20 @@
     <string name="email">Email</string>
     <string name="phone">Phone</string>
     <string name="signmeup">Sign me up!</string>
+
+    <!--  Error messages  -->
+    <string name="username_required_err_msg">Username is Required</string>
+    <string name="password_required_err_msg">Password is Required</string>
+    <string name="retypepassword_required_err_msg">Retype Password is Required</string>
+    <string name="email_required_err_msg">Email is Required</string>
+    <string name="phone_required_err_msg">Phone is Required</string>
+
+    <string name="username_format_err_msg">Only alphabetic characters are allowed</string>
+    <string name="email_format_err_msg">Enter a valid email</string>
+    <string name="phone_format_err_msg">Enter a valid phone number</string>
+
+    <string name="already_exist_username_err_msg">User already exists</string>
+    <string name="different_passwords_err_msg">Password and retype password are not matched</string>
+
+
 </resources>

@@ -2,12 +2,13 @@ package com.example.project1;
 
 import java.util.HashMap;
 
+// Mock database and API calls
 public class Data {
 
     // A hashmap data structure for holding usernames and passwords pair
     HashMap <String, String> hmCredentials;
 
-    public Data(){
+    public Data() {
 
         hmCredentials = new HashMap<>();
 
@@ -24,18 +25,11 @@ public class Data {
 
     // This method checks if username exists in the hashmap
     public Boolean CheckUsername(String username){
-        return hmCredentials.containsKey(username) ? true : false;
+        return hmCredentials.containsKey(username);
     }
 
     // This method checks a username and password combination is correct!
-    public Boolean CheckCredentials(String username, String Password){
-        if (CheckUsername(username)) {
-            String storedPassword = hmCredentials.get(username);
-
-            return (storedPassword.equals(Password)) ? true : false;
-        }
-
-        else
-            return false;
+    public Boolean CheckCredentials(String username, String Password) {
+        return CheckUsername(username) && Password.equals(hmCredentials.get(username));
     }
 }
