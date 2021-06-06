@@ -22,6 +22,7 @@
 
     <string name="already_exist_username_err_msg">User already exists</string>
     <string name="different_passwords_err_msg">Password and retype password are not matched</string>
+    <string name="welcome">Welcome Username!</string>
 
 
 </resources>
