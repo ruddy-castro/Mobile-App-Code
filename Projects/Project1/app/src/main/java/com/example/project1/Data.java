@@ -5,10 +5,23 @@ import java.util.HashMap;
 // Mock database and API calls
 public class Data {
 
+    private static Data instance;
+
     // A hashmap data structure for holding usernames and passwords pair
     HashMap <String, String> hmCredentials;
 
-    public Data() {
+    public static Data getInstance() {
+        if (instance == null) {
+            synchronized (Data.class) {
+                if (instance == null) {
+                    instance = new Data();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private Data() {
 
         hmCredentials = new HashMap<>();
 

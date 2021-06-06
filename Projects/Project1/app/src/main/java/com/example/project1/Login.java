@@ -14,14 +14,11 @@ import android.os.Bundle;
 
 
 public class Login extends AppCompatActivity {
-    Data users;
+    private Data data = Data.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        users = new Data();
-
     }
 }

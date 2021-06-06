@@ -23,7 +23,7 @@ public class Signup extends AppCompatActivity {
 
     private AwesomeValidation awesomeValidation;
 
-    private Data data = new Data();
+    private Data data = Data.getInstance();
 
 
     @Override
