@@ -3,7 +3,7 @@
     Written by:
         Ly Do
         Ruddy Castro
-        Ivy Nguyen
+        Ivy Nguyen 016618483
  */
 
 package com.example.project1;
@@ -30,9 +30,8 @@ public class Login extends AppCompatActivity {
     private EditText edtUsername, edtPassword;
 
     /**
-     * Hook method called when the activity is spawned.
-     *
-     * @param savedInstanceState the saved instance statte
+     * Hook method called when the activity is spawned
+     * @param savedInstanceState the saved instance state
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,9 @@ public class Login extends AppCompatActivity {
         edtUsername = findViewById(R.id.txtUsername);
         edtPassword = findViewById(R.id.txtPassword);
 
-        // Add listener to the login button
+        /**
+         * Events that will happen when the user clicks btnLogin button
+         */
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,7 +79,9 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        // Add listener for the sign-up button
+        /**
+         * Events that will happen when the user clicks btnSignup button
+         */
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
