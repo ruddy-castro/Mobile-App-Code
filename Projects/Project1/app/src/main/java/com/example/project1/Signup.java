@@ -12,8 +12,12 @@ import android.widget.Toast;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 
+/**
+ * This is a class for Sign-up activity.
+ */
 public class Signup extends AppCompatActivity {
 
+    // GUI elements
     private EditText m_txtUsername;
     private EditText m_txtPassword;
     private EditText m_txtRetypePassword;
@@ -21,19 +25,27 @@ public class Signup extends AppCompatActivity {
     private EditText m_txtPhone;
     private Button m_btnSignMeUp;
 
+    // Util for validating inputs from users
     private AwesomeValidation awesomeValidation;
 
+    // Data accessor object for database interactions
     private Data data = Data.getInstance();
 
-
+    /**
+     * Hook method called when the activity is spawned.
+     *
+     * @param savedInstanceState the saved instance statte
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Call super methods
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        // Instantiate awesome validation util object
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
 
-        // Link with GUI
+        // Link with GUI elements
         m_txtUsername = findViewById(R.id.txtUsername);
         m_txtPassword = findViewById(R.id.txtPassword);
         m_txtRetypePassword = findViewById(R.id.txtRetypePassword);
@@ -41,8 +53,8 @@ public class Signup extends AppCompatActivity {
         m_txtPhone = findViewById(R.id.txtPhone);
         m_btnSignMeUp = findViewById(R.id.btnSignMeUp);
 
-        // Validations
-        // Required fields
+        // Add validations
+        // Required field validations
         awesomeValidation.addValidation(this, R.id.txtUsername, "^(?!\\s*$).+", R.string.username_required_err_msg);
         awesomeValidation.addValidation(this, R.id.txtPassword, "^(?!\\s*$).+", R.string.password_required_err_msg);
         awesomeValidation.addValidation(this, R.id.txtRetypePassword, "^(?!\\s*$).+", R.string.retypepassword_required_err_msg);
@@ -54,10 +66,11 @@ public class Signup extends AppCompatActivity {
         awesomeValidation.addValidation(this, R.id.txtEmail, Patterns.EMAIL_ADDRESS, R.string.email_format_err_msg);
         awesomeValidation.addValidation(this, R.id.txtPhone, Patterns.PHONE, R.string.phone_format_err_msg);
 
-        // Add listener to sign up button
+        // Add listener to the sign-me-up button
         m_btnSignMeUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Validate using awesome validation util
                 if (!awesomeValidation.validate()) {
                     System.out.println("Validation failed");
                     return;
@@ -69,20 +82,21 @@ public class Signup extends AppCompatActivity {
                 String username = m_txtUsername.getText().toString();
                 String password = m_txtPassword.getText().toString();
 
-                // Validation
+                // Check if username exists
                 if (data.CheckUsername(username)) {
                     System.out.printf("Username '%s' already exists\n", username);
                     Toast.makeText(getApplicationContext(), R.string.already_exist_username_err_msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                // Check if password and retyped password are matched
                 if (!password.equals(m_txtRetypePassword.getText().toString())) {
                     System.out.println("Password and retype password are not matched");
                     Toast.makeText(getApplicationContext(), R.string.different_passwords_err_msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 
-                // Save to Data
+                // Save username and password to Data
                 data.AddCredential(username, password);
 
                 // Transition to login activity once validation is done
