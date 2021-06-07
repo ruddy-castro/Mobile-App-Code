@@ -2,7 +2,7 @@
     Assignment1
     Written by:
         Ly Do
-        Ruddy Castro
+        Ruddy Castro 026392117
         Ivy Nguyen 016618483
  */
 
