@@ -64,19 +64,26 @@ public class Signup extends AppCompatActivity {
                 } else {
                     System.out.println("Validation successful");
                 }
+                
+                // Extract username and password
+                String username = m_txtUsername.getText().toString();
+                String password = m_txtPassword.getText().toString();
 
                 // Validation
-                if (data.CheckUsername(m_txtUsername.getText().toString())) {
-                    System.out.printf("Username '%s' already exists\n", m_txtUsername.getText().toString());
+                if (data.CheckUsername(username)) {
+                    System.out.printf("Username '%s' already exists\n", username);
                     Toast.makeText(getApplicationContext(), R.string.already_exist_username_err_msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (!m_txtPassword.getText().toString().equals(m_txtRetypePassword.getText().toString())) {
+                if (!password.equals(m_txtRetypePassword.getText().toString())) {
                     System.out.println("Password and retype password are not matched");
                     Toast.makeText(getApplicationContext(), R.string.different_passwords_err_msg, Toast.LENGTH_SHORT).show();
                     return;
                 }
+                
+                // Save to Data
+                data.AddCredential(username, password);
 
                 // Transition to login activity once validation is done
                 Intent signup = new Intent(getApplicationContext(), Login.class);
