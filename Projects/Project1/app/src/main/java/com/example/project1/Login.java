@@ -17,12 +17,23 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
+/**
+ * This is a class for Login activity.
+ */
 public class Login extends AppCompatActivity {
+
+    // Util for validating inputs from users
     private Data data = Data.getInstance();
+
+    // GUI elements
     private Button btnSignup, btnLogin;
     private EditText edtUsername, edtPassword;
 
+    /**
+     * Hook method called when the activity is spawned.
+     *
+     * @param savedInstanceState the saved instance statte
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,38 +45,44 @@ public class Login extends AppCompatActivity {
         edtUsername = findViewById(R.id.txtUsername);
         edtPassword = findViewById(R.id.txtPassword);
 
+        // Add listener to the login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Get user inputs:
+                // Get user inputs:
                 String username = edtUsername.getText().toString();
                 String password = edtPassword.getText().toString();
-                //Add toast message:
+
+                // Add toast message:
                 Toast.makeText(getApplicationContext(), "Trying to login",
                         Toast.LENGTH_SHORT).show();
+
                 // Check login credentials by using checkCredentials method
-                if(data.CheckCredentials(username, password)) {
+                if (data.CheckCredentials(username, password)) {
                     // Successfully logged in: User will be sent to Welcome page with username
                     Intent login = new Intent(getApplicationContext(), Welcome.class);
                     login.putExtra("Username", username);
                     startActivity(login);
-                    //Add toast message:
+
+                    // Add toast message:
                     Toast.makeText(getApplicationContext(), "Successfully logged in",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    //Login failed:
+                    // Login failed:
                     Toast.makeText(getApplicationContext(),
                             "Username/Password Combination Incorrect!", Toast.LENGTH_SHORT).show();
-                    //blank the password field:
+
+                    // blank the password field:
                     edtPassword.getText().clear();
                 }
             }
         });
 
+        // Add listener for the sign-up button
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Transition to Signup page
+                // Transition to Signup page
                 Intent signup = new Intent(getApplicationContext(), Signup.class);
                 startActivity(signup);
             }
