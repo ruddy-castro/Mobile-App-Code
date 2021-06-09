@@ -21,7 +21,6 @@ public class Data {
         // exists, the if statement is skipped and the current running instance is returned.
         if (instance == null) {
             // synchronized is making sure only one thread is executing the Data instance at a time
-            // i.e. multiple devices signing in at once
             synchronized (Data.class) {
                 if (instance == null) {
                     instance = new Data();
