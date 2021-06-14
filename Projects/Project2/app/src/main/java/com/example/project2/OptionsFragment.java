@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class OptionsFragment extends Fragment {
+    private CheckBox chkGallery;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,6 +63,26 @@ public class OptionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_options, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_options, container, false);
+
+        // Wire up check boxes
+        chkGallery = root.findViewById(R.id.cbGallery);
+
+        chkGallery.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    // Leaving for now to verify it works
+                    Toast.makeText(getActivity().getApplicationContext(), "Wow, the checkbox is checked!"
+                            , Toast.LENGTH_SHORT).show();
+
+                    // TODO: setup transaction to replace picture fragment with gallery view
+                }
+            }
+        });
+
+
+        return root;
     }
 }
