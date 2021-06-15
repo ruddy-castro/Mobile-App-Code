@@ -8,7 +8,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView1"
-        android:name="com.example.project2.Fragment1"
+        android:name="com.example.project2.UpperFragment"
         android:layout_width="411dp"
         android:layout_height="632dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,7 +18,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView2"
-        android:name="com.example.project2.Fragment2"
+        android:name="com.example.project2.LowerFragment"
         android:layout_width="414dp"
         android:layout_height="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
