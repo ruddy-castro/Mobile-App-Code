@@ -1,19 +1,14 @@
 package com.example.project2;
 
-import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.Toast;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -83,6 +78,65 @@ public class LowerFragment extends Fragment {
             btnNext.setEnabled(index != numberOfImages - 1);
         });
 
+        galleryView();
+
+        // Add listener for the checkbox slideshow button
+        chkSlide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                log("next slide check box is checked");
+                if(isChecked){
+                    chkGallery.setChecked(false);
+                    slideShow();
+                } else {
+                    chkGallery.setChecked(true);
+                    log("cancel slideshow");
+                    scheduledFuture.cancel(true);
+                    galleryView();
+                }
+            }
+        });
+
+        // Add listener for the checkbox galleryView button
+        chkGallery.setOnCheckedChangeListener((new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    chkSlide.setChecked(false);
+                    log("cancel slideshow");
+                    scheduledFuture.cancel(true);
+                    galleryView();
+                } else {
+                    chkSlide.setChecked(true);
+                    slideShow();
+                }
+            }
+        }));
+
+        return root;
+    }
+
+    /**
+     * If a user checks Slide show then the images will be changed automatically
+     * based on a predefined time.
+     */
+    private void slideShow(){
+        log("start slideshow");
+        scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
+            try {
+                log("next picture");
+                int nextIndex = (sharedData.getSelectedItemIndex().getValue() + 1) % numberOfImages;
+                sharedData.setSelectedItemIndex(nextIndex);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 3, 3, TimeUnit.SECONDS);
+    }
+
+    /**
+     * If a user checks gallery view:
+     */
+    private void galleryView(){
         // Add listener for the back button
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,34 +156,6 @@ public class LowerFragment extends Fragment {
                 sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() + 1);
             }
         });
-
-
-        // Add listener for the checkbox slideshow button
-        chkSlide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                log("next button clicked");
-                if (isChecked) {
-                    log("start slideshow");
-                    scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
-                        try {
-                            log("next picture");
-                            int nextIndex = (sharedData.getSelectedItemIndex().getValue() + 1) % numberOfImages;
-                            sharedData.setSelectedItemIndex(nextIndex);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }, 3, 3, TimeUnit.SECONDS);
-                } else {
-                    log("cancel slideshow");
-                    scheduledFuture.cancel(true);
-                }
-            }
-        });
-
-
-
-        return root;
     }
 
     private void log(Object message) {
