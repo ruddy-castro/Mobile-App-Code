@@ -8,17 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PictureFragment#newInstance} factory method to
+ * Use the {@link UpperFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PictureFragment extends Fragment {
+public class UpperFragment extends Fragment {
 
     GridView grdView;
-    int animals[] = {R.drawable.animal13, R.drawable.animal14, R.drawable.animal15,
-            R.drawable.animal16, R.drawable.animal17, R.drawable.animal18};
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -26,7 +25,7 @@ public class PictureFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public PictureFragment() {
+    public UpperFragment() {
         // Required empty public constructor
     }
 
@@ -38,8 +37,8 @@ public class PictureFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment PictureFragment.
      */
-    public static PictureFragment newInstance(String param1, String param2) {
-        PictureFragment fragment = new PictureFragment();
+    public static UpperFragment newInstance(String param1, String param2) {
+        UpperFragment fragment = new UpperFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,11 +59,9 @@ public class PictureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_options, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.activity_upper_fragment, container, false);
+        ImageView icon = root.findViewById(R.id.ivImage);
 
-        grdView = root.findViewById(R.id.ivImage);
-        CustomAdapter ca = new CustomAdapter(root.getContext(), animals);
-        grdView.setAdapter(ca);
 
         return root;
     }

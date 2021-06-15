@@ -14,16 +14,16 @@ import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link OptionsFragment#newInstance} factory method to
+ * Use the {@link LowerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class OptionsFragment extends Fragment {
+public class LowerFragment extends Fragment {
     // The fragment initialization needed parameters
     private CheckBox chkGallery;
     private CheckBox chkSlide;
     private Button btnBack;
     private Button btnNext;
-    private PictureFragment frag;
+    private UpperFragment frag;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,7 +31,7 @@ public class OptionsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public OptionsFragment() {
+    public LowerFragment() {
         // Required empty public constructor
     }
 
@@ -43,8 +43,8 @@ public class OptionsFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment OptionsFragment.
      */
-    public static OptionsFragment newInstance(String param1, String param2) {
-        OptionsFragment fragment = new OptionsFragment();
+    public static LowerFragment newInstance(String param1, String param2) {
+        LowerFragment fragment = new LowerFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -76,14 +76,14 @@ public class OptionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_options, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.activity_lower_fragment, container, false);
 
         // Wire up
         chkGallery = root.findViewById(R.id.cbGallery);
         chkSlide = root.findViewById(R.id.cbSlideShow);
         btnBack = root.findViewById(R.id.btnPrevious);
         btnNext = root.findViewById(R.id.btnNext);
-        frag = new PictureFragment();
+        frag = new UpperFragment();
 
         chkGallery.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
