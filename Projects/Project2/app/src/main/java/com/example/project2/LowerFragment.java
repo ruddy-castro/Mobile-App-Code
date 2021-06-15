@@ -42,16 +42,6 @@ public class LowerFragment extends Fragment {
         if (getArguments() != null) {
             numberOfImages = getArguments().getInt(ARG_PARAM1);
         }
-
-        // Init shared data variable
-        sharedData = new ViewModelProvider(requireActivity()).get(SharedData.class);
-
-        // Observe the selected index
-        sharedData.getSelectedItemIndex().observe(this, index -> {
-            log("selected index change to " + index);
-            btnPrevious.setEnabled(index != 0);
-            btnNext.setEnabled(index != numberOfImages - 1);
-        });
     }
 
     /**
@@ -72,6 +62,16 @@ public class LowerFragment extends Fragment {
         chkSlide = root.findViewById(R.id.cbSlideShow);
         btnPrevious = root.findViewById(R.id.btnPrevious);
         btnNext = root.findViewById(R.id.btnNext);
+
+        // Init shared data variable
+        sharedData = new ViewModelProvider(requireActivity()).get(SharedData.class);
+
+        // Observe the selected index
+        sharedData.getSelectedItemIndex().observe(getViewLifecycleOwner(), index -> {
+            log("selected index change to " + index);
+            btnPrevious.setEnabled(index != 0);
+            btnNext.setEnabled(index != numberOfImages - 1);
+        });
 
         // Add listener for the back button
         btnPrevious.setOnClickListener(new View.OnClickListener() {

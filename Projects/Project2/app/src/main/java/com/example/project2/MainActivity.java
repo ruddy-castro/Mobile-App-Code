@@ -40,11 +40,11 @@ public class MainActivity extends AppCompatActivity {
         // Initialize the selected item index to be 0 (first image)
         sharedData.setSelectedItemIndex(0);
 
-        // Just change up the index to display any animal
-        mUpperFrag = UpperFragment.newInstance("Image", animals[5]);
-
+        // Create fragment transaction
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragmentContainerView1, mUpperFrag);
+
+        // Create LowerFragment
+        transaction.add(R.id.fragmentContainerView1, UpperFragment.class, null);
 
         // Create LowerFragment
         Bundle args2 = new Bundle();
