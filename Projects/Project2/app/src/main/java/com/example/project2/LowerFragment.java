@@ -78,66 +78,6 @@ public class LowerFragment extends Fragment {
             btnNext.setEnabled(index != numberOfImages - 1);
         });
 
-        galleryView();
-
-        // Add listener for the checkbox slideshow button
-        chkSlide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                log("next slide check box is checked");
-                if(isChecked){
-                    chkGallery.setChecked(false);
-                    slideShow();
-                } else {
-                    chkGallery.setChecked(true);
-                    log("cancel slideshow");
-                    scheduledFuture.cancel(true);
-                    galleryView();
-                }
-            }
-        });
-
-        // Add listener for the checkbox galleryView button
-        chkGallery.setOnCheckedChangeListener((new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    chkSlide.setChecked(false);
-                    log("cancel slideshow");
-                    scheduledFuture.cancel(true);
-                    galleryView();
-                } else {
-                    chkSlide.setChecked(true);
-                    slideShow();
-                }
-            }
-        }));
-
-        return root;
-    }
-
-    /**
-     * If a user checks Slide show then the images will be changed automatically
-     * based on a predefined time.
-     */
-    private void slideShow(){
-        log("start slideshow");
-        scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
-            try {
-                log("next picture");
-                int nextIndex = (sharedData.getSelectedItemIndex().getValue() + 1) % numberOfImages;
-                sharedData.setSelectedItemIndex(nextIndex);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }, 3, 3, TimeUnit.SECONDS);
-    }
-
-    /**
-     * If a user checks gallery view:
-     */
-    private void galleryView(){
-        // Add listener for the back button
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,6 +96,55 @@ public class LowerFragment extends Fragment {
                 sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() + 1);
             }
         });
+
+        // Add listener for the checkbox slideshow button
+        chkSlide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                log("slideshow check box is checked");
+                //If a user checks Slide show then the images will be changed automatically
+                //based on a predefined time.
+                if(chkSlide.isChecked()){
+                    chkGallery.setChecked(false);
+                    slideShow();
+                } else {
+                    log("cancel slideshow");
+                    scheduledFuture.cancel(true);
+                    chkGallery.setChecked(true);
+                }
+            }
+        });
+
+        // Add listener for the checkbox galleryView button
+        chkGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                log("gallery check box is checked");
+                if(chkGallery.isChecked()){
+                    log("cancel slideshow");
+                    scheduledFuture.cancel(true);
+                    chkSlide.setChecked(false);
+                } else {
+                    chkSlide.setChecked(true);
+                    slideShow();
+                }
+            }
+        });
+
+        return root;
+    }
+
+    private void slideShow(){
+        log("start slideshow");
+        scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
+            try {
+                log("next picture");
+                int nextIndex = (sharedData.getSelectedItemIndex().getValue()+1) % numberOfImages;
+                sharedData.setSelectedItemIndex(nextIndex);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }, 3, 3, TimeUnit.SECONDS);
     }
 
     private void log(Object message) {
