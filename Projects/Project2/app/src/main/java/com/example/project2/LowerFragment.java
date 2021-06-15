@@ -78,23 +78,48 @@ public class LowerFragment extends Fragment {
             btnNext.setEnabled(index != numberOfImages - 1);
         });
 
-        galleryView();
+        // Add listener for the back button
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Decrement selected index
+                log("previous button clicked");
+
+                // If the app is in gallery view, do not progress through pictures
+                if(!chkGallery.isChecked())
+                    sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() - 1);
+            }
+        });
+
+        // Add listener for the next button
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Increment selected index
+                log("next button clicked");
+
+                // If the app is in gallery view, do not progress through pictures
+                if(!chkGallery.isChecked())
+                    sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() + 1);
+            }
+        });
 
         // Add listener for the checkbox slideshow button
         chkSlide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 log("next slide check box is checked");
+
                 if(isChecked){
                     if(chkGallery.isChecked())
                         chkGallery.setChecked(false);
 
                     slideShow();
-                } else {
-                    //chkGallery.setChecked(true);
+                }
+
+                else {
                     log("cancel slideshow");
                     scheduledFuture.cancel(true);
-                    //galleryView();
                 }
             }
         });
@@ -103,6 +128,7 @@ public class LowerFragment extends Fragment {
         chkGallery.setOnCheckedChangeListener((new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 if(isChecked){
                     // Only allow one checkbox to be active. Cancel slideshow if it is checked
                     if(chkSlide.isChecked()){
@@ -115,7 +141,7 @@ public class LowerFragment extends Fragment {
                 }
 
                 else {
-                    // TODO: Setup gallery view in fragment
+                    log("cancel gallery view");
                 }
             }
         }));
@@ -144,25 +170,10 @@ public class LowerFragment extends Fragment {
      * If a user checks gallery view:
      */
     private void galleryView(){
-        // Add listener for the back button
-        btnPrevious.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Decrement selected index
-                log("previous button clicked");
-                sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() - 1);
-            }
-        });
 
-        // Add listener for the next button
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Increment selected index
-                log("next button clicked");
-                sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() + 1);
-            }
-        });
+        // TODO: Setup gallery view using gridview
+
+        // TODO: Open up image when clicked on and uncheck gallery view
     }
 
     private void log(Object message) {
