@@ -86,13 +86,15 @@ public class LowerFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 log("next slide check box is checked");
                 if(isChecked){
-                    chkGallery.setChecked(false);
+                    if(chkGallery.isChecked())
+                        chkGallery.setChecked(false);
+
                     slideShow();
                 } else {
-                    chkGallery.setChecked(true);
+                    //chkGallery.setChecked(true);
                     log("cancel slideshow");
                     scheduledFuture.cancel(true);
-                    galleryView();
+                    //galleryView();
                 }
             }
         });
@@ -102,13 +104,18 @@ public class LowerFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    chkSlide.setChecked(false);
-                    log("cancel slideshow");
-                    scheduledFuture.cancel(true);
+                    // Only allow one checkbox to be active. Cancel slideshow if it is checked
+                    if(chkSlide.isChecked()){
+                        chkSlide.setChecked(false);
+                        log("cancel slideshow");
+                        scheduledFuture.cancel(true);
+                        }
+
                     galleryView();
-                } else {
-                    chkSlide.setChecked(true);
-                    slideShow();
+                }
+
+                else {
+                    // TODO: Setup gallery view in fragment
                 }
             }
         }));
