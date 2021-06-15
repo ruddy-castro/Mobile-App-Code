@@ -18,7 +18,7 @@ public class SharedData extends ViewModel {
     }
 
     public void setSelectedItemIndex(Integer index) {
-        selectedItemIndex.setValue(index);
+        selectedItemIndex.postValue(index);
     }
 
     public LiveData<Integer> getSelectedItemIndex() {

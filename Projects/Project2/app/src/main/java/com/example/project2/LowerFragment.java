@@ -1,5 +1,6 @@
 package com.example.project2;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,6 +13,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +36,10 @@ public class LowerFragment extends Fragment {
     private int numberOfImages;
 
     private SharedData sharedData;
+
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private ScheduledFuture scheduledFuture;
+
 
     /**
      * Initial creation of the fragment, non graphical initializations
@@ -92,6 +102,32 @@ public class LowerFragment extends Fragment {
                 sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() + 1);
             }
         });
+
+
+        // Add listener for the checkbox slideshow button
+        chkSlide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                log("next button clicked");
+                if (isChecked) {
+                    log("start slideshow");
+                    scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
+                        try {
+                            log("next picture");
+                            int nextIndex = (sharedData.getSelectedItemIndex().getValue() + 1) % numberOfImages;
+                            sharedData.setSelectedItemIndex(nextIndex);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }, 3, 3, TimeUnit.SECONDS);
+                } else {
+                    log("cancel slideshow");
+                    scheduledFuture.cancel(true);
+                }
+            }
+        });
+
+
 
         return root;
     }
