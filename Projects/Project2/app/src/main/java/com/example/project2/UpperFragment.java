@@ -23,7 +23,7 @@ public class UpperFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
-    private String mParam2;
+    private int mParam2;
 
     public UpperFragment() {
         // Required empty public constructor
@@ -37,11 +37,11 @@ public class UpperFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment PictureFragment.
      */
-    public static UpperFragment newInstance(String param1, String param2) {
+    public static UpperFragment newInstance(String param1, int param2) {
         UpperFragment fragment = new UpperFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,7 +51,7 @@ public class UpperFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam2 = getArguments().getInt(ARG_PARAM2);
         }
     }
 
@@ -60,7 +60,8 @@ public class UpperFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.activity_upper_fragment, container, false);
-        ImageView icon = root.findViewById(R.id.ivImage);
+        ImageView image = (ImageView) root.findViewById(R.id.ivSingleImage);
+        image.setImageResource(mParam2);
 
 
         return root;

@@ -24,8 +24,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        CustomAdapter ca = new CustomAdapter(getApplicationContext(), animals);
+        // Just change up the index to display any animal
+        mUpperFrag = UpperFragment.newInstance("Image", animals[5]);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragmentContainerView1, mUpperFrag);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }
