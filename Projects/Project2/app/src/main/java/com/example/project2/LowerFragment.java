@@ -3,6 +3,7 @@ package com.example.project2;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,43 +15,21 @@ import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LowerFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class LowerFragment extends Fragment {
     // The fragment initialization needed parameters
     private CheckBox chkGallery;
     private CheckBox chkSlide;
-    private Button btnBack;
+    private Button btnPrevious;
     private Button btnNext;
-    private UpperFragment frag;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
+    private static final String ARG_PARAM1 = "numberOfImages";
 
-    public LowerFragment() {
-        // Required empty public constructor
-    }
+    private int numberOfImages;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OptionsFragment.
-     */
-    public static LowerFragment newInstance(String param1, String param2) {
-        LowerFragment fragment = new LowerFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private SharedData sharedData;
 
     /**
      * Initial creation of the fragment, non graphical initializations
@@ -59,10 +38,20 @@ public class LowerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            numberOfImages = getArguments().getInt(ARG_PARAM1);
         }
+
+        // Init shared data variable
+        sharedData = new ViewModelProvider(requireActivity()).get(SharedData.class);
+
+        // Observe the selected index
+        sharedData.getSelectedItemIndex().observe(this, index -> {
+            log("selected index change to " + index);
+            btnPrevious.setEnabled(index != 0);
+            btnNext.setEnabled(index != numberOfImages - 1);
+        });
     }
 
     /**
@@ -81,25 +70,33 @@ public class LowerFragment extends Fragment {
         // Wire up
         chkGallery = root.findViewById(R.id.cbGallery);
         chkSlide = root.findViewById(R.id.cbSlideShow);
-        btnBack = root.findViewById(R.id.btnPrevious);
+        btnPrevious = root.findViewById(R.id.btnPrevious);
         btnNext = root.findViewById(R.id.btnNext);
-        frag = new UpperFragment();
 
-        chkGallery.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        // Add listener for the back button
+        btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                {
-                    // Leaving for now to verify it works
-                    Toast.makeText(getActivity().getApplicationContext(), "Wow, the checkbox is checked!"
-                            , Toast.LENGTH_SHORT).show();
-
-                    // TODO: setup transaction to replace picture fragment with gallery view
-                }
+            public void onClick(View v) {
+                // Decrement selected index
+                log("previous button clicked");
+                sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() - 1);
             }
         });
 
+        // Add listener for the next button
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Increment selected index
+                log("next button clicked");
+                sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() + 1);
+            }
+        });
 
         return root;
+    }
+
+    private void log(Object message) {
+        System.out.printf("LowerFragment: %s\n", message);
     }
 }
