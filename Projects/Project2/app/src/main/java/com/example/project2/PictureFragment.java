@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,12 +16,13 @@ import android.view.ViewGroup;
  */
 public class PictureFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
+    GridView grdView;
+    int animals[] = {R.drawable.animal13, R.drawable.animal14, R.drawable.animal15,
+            R.drawable.animal16, R.drawable.animal17, R.drawable.animal18};
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -36,7 +38,6 @@ public class PictureFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment PictureFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static PictureFragment newInstance(String param1, String param2) {
         PictureFragment fragment = new PictureFragment();
         Bundle args = new Bundle();
@@ -59,6 +60,14 @@ public class PictureFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_picture, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_options, container, false);
+
+        grdView = root.findViewById(R.id.ivImage);
+        CustomAdapter ca = new CustomAdapter(root.getContext(), animals);
+        grdView.setAdapter(ca);
+
+        return root;
     }
+
+
 }

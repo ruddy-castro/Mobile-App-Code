@@ -19,24 +19,18 @@ public class CustomAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        return animals.length;
-    }
+    public int getCount() { return animals.length; }
 
     @Override
-    public Object getItem(int position) {
-        return animals[position];
-    }
+    public Object getItem(int position) { return animals[position]; }
 
     @Override
-    public long getItemId(int position) {
-        return 0;
-    }
+    public long getItemId(int position) { return 0; }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = inflater.inflate(R.layout.activity_gridview, null);
-        ImageView icon = convertView.findViewById(R.id.icon);
+        ImageView icon = convertView.findViewById(R.id.ivImage);
         icon.setImageResource(animals[position]);
 
         return convertView;

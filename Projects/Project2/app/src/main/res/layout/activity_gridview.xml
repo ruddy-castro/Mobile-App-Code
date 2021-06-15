@@ -5,9 +5,9 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/icon"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:id="@+id/ivImage"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:scaleType="fitXY"
         android:layout_margin="5dp"
         android:layout_gravity="center_horizontal" />
