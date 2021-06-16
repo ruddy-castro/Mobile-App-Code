@@ -86,7 +86,7 @@ public class LowerFragment extends Fragment {
                 log("previous button clicked");
 
                 // If the app is in gallery view, do not progress through pictures
-                if(!chkGallery.isChecked())
+                if (!chkGallery.isChecked())
                     sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() - 1);
             }
         });
@@ -99,7 +99,7 @@ public class LowerFragment extends Fragment {
                 log("next button clicked");
 
                 // If the app is in gallery view, do not progress through pictures
-                if(!chkGallery.isChecked())
+                if (!chkGallery.isChecked())
                     sharedData.setSelectedItemIndex(sharedData.getSelectedItemIndex().getValue() + 1);
             }
         });
@@ -110,10 +110,10 @@ public class LowerFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 log("next slide check box is checked");
 
-                if(isChecked){
-                    if(chkGallery.isChecked())
+                if (isChecked) {
+                    if (chkGallery.isChecked()) {
                         chkGallery.setChecked(false);
-
+                    }
                     slideShow();
                 }
 
@@ -129,18 +129,16 @@ public class LowerFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(isChecked){
+                if (isChecked) {
                     // Only allow one checkbox to be active. Cancel slideshow if it is checked
-                    if(chkSlide.isChecked()){
-                        chkSlide.setChecked(false);
+                    if (chkSlide.isChecked()) {
                         log("cancel slideshow");
+                        chkSlide.setChecked(false);
                         scheduledFuture.cancel(true);
                     }
 
                     galleryView();
-                }
-
-                else {
+                } else {
                     log("cancel gallery view");
                 }
             }
@@ -153,10 +151,11 @@ public class LowerFragment extends Fragment {
      * If a user checks Slide show then the images will be changed automatically
      * based on a predefined time.
      */
-    private void slideShow(){
+    private void slideShow() {
         log("start slideshow");
         scheduledFuture = scheduler.scheduleAtFixedRate(() -> {
             try {
+                // Increment the selected index by 1 and wrap around if at the end
                 log("next picture");
                 int nextIndex = (sharedData.getSelectedItemIndex().getValue() + 1) % numberOfImages;
                 sharedData.setSelectedItemIndex(nextIndex);
@@ -169,7 +168,7 @@ public class LowerFragment extends Fragment {
     /**
      * If a user checks gallery view:
      */
-    private void galleryView(){
+    private void galleryView() {
 
         // TODO: Setup gallery view using gridview
 
