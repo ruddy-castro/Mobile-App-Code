@@ -13,9 +13,6 @@ import androidx.lifecycle.ViewModelProvider;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
-    private UpperFragment mUpperFrag;
-    private LowerFragment mLowerFrag;
-
     private SharedData sharedData;
 
     private static final int animals[] = {R.drawable.animal13, R.drawable.animal14, R.drawable.animal15,

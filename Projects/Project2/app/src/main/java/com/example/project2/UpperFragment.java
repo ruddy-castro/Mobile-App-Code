@@ -15,9 +15,6 @@ import android.widget.ImageView;
  */
 public class UpperFragment extends Fragment {
 
-    private GridView grdView;
-    private ImageView image;
-
     private SharedData sharedData;
 
     /**
