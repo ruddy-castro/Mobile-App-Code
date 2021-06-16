@@ -14,7 +14,9 @@ Lower Fragment: A fragment that holds all options to control the photo applicati
 Main Activity: An activity that controls the interaction between both fragments. This activity holds 
 	the image array that is used for the shared data.
 
-Shared Data: 
+Shared Data: A ViewModel class to share data between the MainActivity and its fragments. It is a
+    singleton in the MainActivity scope. It uses the observer pattern so that the subscribers can
+    listen to events when the selected index is changed.
 
 Upper Fragment: A fragment that displays the image file that is currently chosen. This fragment uses
 	a ViewModel to refresh the page with a new image. 
