@@ -49,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private class getMakes extends AsyncTask<Void, Void, Void> {
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
         }
 
@@ -61,16 +60,13 @@ public class MainActivity extends AppCompatActivity {
             // Added beginning and end strings to turn string into JSONObject
             String jsonStr = "{\"makes\": " + sh.makeServiceCall(makesURL) + "}";
 
-            if(jsonStr != null)
-            {
-                try
-                {
+            if (jsonStr != null) {
+                try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
 
                     JSONArray carMakes = jsonObj.getJSONArray("makes");
 
-                    for(int i = 0; i < carMakes.length(); i++)
-                    {
+                    for (int i = 0; i < carMakes.length(); i++) {
                         JSONObject c = carMakes.getJSONObject(i);
 
                         String id = c.getString("id");
@@ -82,10 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
                         makeList.add(carMake);
                     }
-                }
-
-                catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -95,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void result)
-        {
+        protected void onPostExecute(Void result) {
             // TODO: Display list
             super.onPostExecute(result);
         }
@@ -109,8 +101,7 @@ public class MainActivity extends AppCompatActivity {
     private class getModels extends AsyncTask<Void, Void, Void> {
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             super.onPreExecute();
         }
 
@@ -122,18 +113,15 @@ public class MainActivity extends AppCompatActivity {
             String makeID = "10";
 
             // Added beginning and end strings to turn string into JSONObject
-            String jsonStr = "{\"models\": " + sh.makeServiceCall(modelsURL + "/" + makeID)+ "}";
+            String jsonStr = "{\"models\": " + sh.makeServiceCall(modelsURL + "/" + makeID) + "}";
 
-            if(jsonStr != null)
-            {
-                try
-                {
+            if (jsonStr != null) {
+                try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
 
                     JSONArray carModels = jsonObj.getJSONArray("models");
 
-                    for(int i = 0; i < carModels.length(); i++)
-                    {
+                    for (int i = 0; i < carModels.length(); i++) {
                         JSONObject m = carModels.getJSONObject(i);
 
                         String modelID = m.getString("id");
@@ -145,10 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
                         modelList.add(carMake);
                     }
-                }
-
-                catch (JSONException e)
-                {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
@@ -158,8 +143,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void result)
-        {
+        protected void onPostExecute(Void result) {
             // TODO: Display list
             super.onPostExecute(result);
         }
