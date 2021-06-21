@@ -86,15 +86,14 @@ public class CarServiceImpl implements CarService {
         try {
             final URL url = new URL(reqUrl);
             final HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            try {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 conn.setRequestMethod("GET");
                 final StringBuilder sb = new StringBuilder();
                 String line;
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                while ((line = br.readLine()) != null) {
-                    sb.append(line+"\n");
+
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append('\n');
                 }
-                br.close();
                 return sb.toString();
             } finally {
                 conn.disconnect();
