@@ -9,6 +9,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.example.project3.model.CarMake;
+import com.example.project3.service.CarService;
+import com.example.project3.service.CarServiceImpl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> modelList;
     private ListView lv;
 
+    private CarService carService = CarServiceImpl.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         lv = findViewById(R.id.list);
 
         new getMakes().execute();
-        new getModels().execute();
     }
 
     /**
@@ -57,88 +60,42 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            HttpHandler sh = new HttpHandler();
+            System.out.println("Ly: get makes");
+            System.out.println(carService.getAvailableCarMakes());
+            System.out.println("Ly: get models");
+            System.out.println(carService.getAvailableCarModels("10"));
+            System.out.println("Ly: get cars");
+            System.out.println(carService.getAvailableCars("10", "20", "92603"));
+            System.out.println("Ly: get details");
+            System.out.println(carService.getCarDetails("3484"));
 
-            // Added beginning and end strings to turn string into JSONObject
-            String jsonStr = "{\"makes\": " + sh.makeServiceCall(makesURL) + "}";
-
-            if (jsonStr != null) {
-                try {
-                    JSONObject jsonObj = new JSONObject(jsonStr);
-
-                    JSONArray carMakes = jsonObj.getJSONArray("makes");
-
-                    for (int i = 0; i < carMakes.length(); i++) {
-                        JSONObject c = carMakes.getJSONObject(i);
-
-                        String id = c.getString("id");
-                        String make = c.getString("vehicle_make");
-
-                        HashMap<String, String> carMake = new HashMap<>();
-                        carMake.put("id", id);
-                        carMake.put("make", make);
-
-                        makeList.add(carMake);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            // TODO: Display list
-            super.onPostExecute(result);
-        }
-    }
-
-    /**
-     * Class to get the models of the vehicles using the URL
-     */
-    @SuppressWarnings("deprecation")
-    private class getModels extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            HttpHandler sh = new HttpHandler();
-
-            // TODO: get makeID to reflect the chosen car make
-            String makeID = "10";
-
-            // Added beginning and end strings to turn string into JSONObject
-            String jsonStr = "{\"models\": " + sh.makeServiceCall(modelsURL + "/" + makeID) + "}";
-
-            if (jsonStr != null) {
-                try {
-                    JSONObject jsonObj = new JSONObject(jsonStr);
-
-                    JSONArray carModels = jsonObj.getJSONArray("models");
-
-                    for (int i = 0; i < carModels.length(); i++) {
-                        JSONObject m = carModels.getJSONObject(i);
-
-                        String modelID = m.getString("id");
-                        String modelNum = m.getString("model");
-
-                        HashMap<String, String> carMake = new HashMap<>();
-                        carMake.put("model_ID", modelID);
-                        carMake.put("model_number", modelNum);
-
-                        modelList.add(carMake);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+//            HttpHandler sh = new HttpHandler();
+//
+//            // Added beginning and end strings to turn string into JSONObject
+//            String jsonStr = "{\"makes\": " + sh.makeServiceCall(makesURL) + "}";
+//
+//            if (jsonStr != null) {
+//                try {
+//                    JSONObject jsonObj = new JSONObject(jsonStr);
+//
+//                    JSONArray carMakes = jsonObj.getJSONArray("makes");
+//
+//                    for (int i = 0; i < carMakes.length(); i++) {
+//                        JSONObject c = carMakes.getJSONObject(i);
+//
+//                        String id = c.getString("id");
+//                        String make = c.getString("vehicle_make");
+//
+//                        HashMap<String, String> carMake = new HashMap<>();
+//                        carMake.put("id", id);
+//                        carMake.put("make", make);
+//
+//                        makeList.add(carMake);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
 
             return null;
@@ -150,4 +107,59 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(result);
         }
     }
+
+//    /**
+//     * Class to get the models of the vehicles using the URL
+//     */
+//    @SuppressWarnings("deprecation")
+//    private class getModels extends AsyncTask<Void, Void, Void> {
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            HttpHandler sh = new HttpHandler();
+//
+//            // TODO: get makeID to reflect the chosen car make
+//            String makeID = "10";
+//
+//            // Added beginning and end strings to turn string into JSONObject
+//            String jsonStr = "{\"models\": " + sh.makeServiceCall(modelsURL + "/" + makeID) + "}";
+//
+//            if (jsonStr != null) {
+//                try {
+//                    JSONObject jsonObj = new JSONObject(jsonStr);
+//
+//                    JSONArray carModels = jsonObj.getJSONArray("models");
+//
+//                    for (int i = 0; i < carModels.length(); i++) {
+//                        JSONObject m = carModels.getJSONObject(i);
+//
+//                        String modelID = m.getString("id");
+//                        String modelNum = m.getString("model");
+//
+//                        HashMap<String, String> carMake = new HashMap<>();
+//                        carMake.put("model_ID", modelID);
+//                        carMake.put("model_number", modelNum);
+//
+//                        modelList.add(carMake);
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            // TODO: Display list
+//            super.onPostExecute(result);
+//        }
+//    }
 }
