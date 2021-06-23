@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:layout_margin="5dp"/>
+        android:layout_margin="5dp" />
 
     <Spinner
         android:id="@+id/available_models"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_margin="5dp"
-        android:layout_below="@id/available_cars"/>
+        android:layout_below="@id/available_cars" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/available_vehicle"
