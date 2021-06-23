@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="15dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/car_list"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:showDividers="middle">
+
+        <Spinner
+            android:id="@+id/available_cars"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:padding="10dp"/>
+
+        <Spinner
+            android:id="@+id/available_models"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/available_cars"
+            android:layout_margin="5dp"
+            android:padding="10dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/available_vehicle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:layout_below="@+id/available_models" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/car_detail_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/car_list"
+        android:layout_weight="3">
+        <include layout="@layout/car_detail" />
+    </FrameLayout>
+
+</RelativeLayout>
