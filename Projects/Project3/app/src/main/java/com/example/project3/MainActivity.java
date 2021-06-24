@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity{
     //      Vehicle Details: .../<carid>
     private static String searchURL = "https://thawing-beach-68207.herokuapp.com/cars/";
 
+    final String TAG = MainActivity.class.getSimpleName();
+
 
     ArrayList<HashMap<String, String>> makeList;
     //ArrayList<HashMap<String, String>> modelList;
@@ -56,13 +59,32 @@ public class MainActivity extends AppCompatActivity{
         modelList = new ArrayList<>();
         lv = findViewById(R.id.list);
 
+        // Initialize spinner for car makes and car models
+        final Spinner carMakesSpinner = findViewById(R.id.available_cars);
+        final Spinner carModelsSpinner = findViewById(R.id.available_models);
+
+        carMakesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Extract the selected car make
+                final CarMake carMake = (CarMake) parent.getItemAtPosition(position);
+                Log.i(TAG, "Ly: selected carMake = " + carMake);
+
+                // Setup the car models spinner
+                carService.getAvailableCarModels(carMake.id(), (carModels) -> {
+                    Log.i(TAG, "Ly: car models = " + carModels);
+                    setUpAdapter(carModelsSpinner, carModels);
+                });
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        // Make a call to get available car makes to setup car make spinner
         carService.getAvailableCarMakes((carMakes) -> {
-            System.out.println("Ly: get makes");
-            System.out.println(carMakes);
-            carService.getAvailableCarModels(carMakes.get(0).id(), (carModels) -> {
-                System.out.println("Ly: get models");
-                System.out.println(carModels);
-            });
+            Log.i(TAG, "Ly: car makes = " + carMakes);
+            setUpAdapter(carMakesSpinner, carMakes);
         });
 
     }
@@ -139,7 +161,8 @@ public class MainActivity extends AppCompatActivity{
 //            // Update the model spinner
 //            makes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //                @Override
-//                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                public void onItemSelected(AdapterView<CarMake> parent, View view, int position, long id) {
+//                    parent.getItemAtPosition(0);
 //                    selectedMake = makeList.get(position).get("id");
 //                    Toast.makeText(getApplicationContext(), selectedMake, Toast.LENGTH_SHORT).show();
 //
@@ -166,12 +189,15 @@ public class MainActivity extends AppCompatActivity{
 //        }
 //    }
 //
-//    private void setUpAdapter(Spinner s, ArrayList<String> data) {
-//        ArrayAdapter<String> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data);
-//        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//
-//        s.setAdapter(aa);
-//    }
+    private <T> void setUpAdapter(Spinner s, List<T> data) {
+        ArrayAdapter<T> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // This is to prevent "CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch its views."
+        runOnUiThread(() -> {
+            s.setAdapter(aa);
+        });
+    }
 //
 //    /**
 //     * Class to get the models of the vehicles using the URL

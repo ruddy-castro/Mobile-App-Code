@@ -14,4 +14,9 @@ public class CarMake {
 
     @SerializedName("vehicle_make")
     private final String value;
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }
