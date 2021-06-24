@@ -18,6 +18,9 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class CarServiceImpl implements CarService {
 
@@ -26,6 +29,8 @@ public class CarServiceImpl implements CarService {
     private static final String TAG = CarServiceImpl.class.getSimpleName();
 
     private static CarServiceImpl instance;
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     private CarServiceImpl() { }
 
@@ -41,45 +46,57 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<CarMake> getAvailableCarMakes() {
-        Log.i(TAG, "Get available car makes");
-        final String reqUrl = String.format("%s/carmakes", BASE_URL);
-        String response = makeGetRequest(reqUrl);
-        Log.i(TAG, "Response string = " + response);
-        return GSON.fromJson(response, new TypeToken<List<CarMake>>() {}.getType());
+    public void getAvailableCarMakes(Consumer<List<CarMake>> callback) {
+        executor.execute(() -> {
+            Log.i(TAG, "Get available car makes");
+            final String reqUrl = String.format("%s/carmakes", BASE_URL);
+            String response = makeGetRequest(reqUrl);
+            Log.i(TAG, "Response string = " + response);
+            final List<CarMake> carMakes = GSON.fromJson(response, new TypeToken<List<CarMake>>() {}.getType());
+            callback.accept(carMakes);
+        });
     }
 
     @Override
-    public List<CarModel> getAvailableCarModels(String makeId) {
-        Log.i(TAG, "Get available car models");
-        final String reqUrl = String.format("%s/carmodelmakes/%s", BASE_URL, makeId);
-        String response = makeGetRequest(reqUrl);
-        Log.i(TAG, "Response string = " + response);
-        return GSON.fromJson(response, new TypeToken<List<CarModel>>() {}.getType());
+    public void getAvailableCarModels(String makeId, Consumer<List<CarModel>> callback) {
+        executor.execute(() -> {
+            Log.i(TAG, "Get available car models");
+            final String reqUrl = String.format("%s/carmodelmakes/%s", BASE_URL, makeId);
+            String response = makeGetRequest(reqUrl);
+            Log.i(TAG, "Response string = " + response);
+            final List<CarModel> carModels = GSON.fromJson(response, new TypeToken<List<CarModel>>() {}.getType());
+            callback.accept(carModels);
+        });
     }
 
     @Override
-    public List<Car> getAvailableCars(String makeId, String modelId, String zipCode) {
-        Log.i(TAG, "Get available cars");
-        final String reqUrl = String.format("%s/cars/%s/%s/%s", BASE_URL, makeId, modelId, zipCode);
-        String response = makeGetRequest(reqUrl);
-        Log.i(TAG, "Response string = " + response);
+    public void getAvailableCars(String makeId, String modelId, String zipCode, Consumer<List<Car>> callback) {
+        executor.execute(() -> {
+            Log.i(TAG, "Get available cars");
+            final String reqUrl = String.format("%s/cars/%s/%s/%s", BASE_URL, makeId, modelId, zipCode);
+            String response = makeGetRequest(reqUrl);
+            Log.i(TAG, "Response string = " + response);
 
-        // Skip the wrapper "list"
-        JsonElement lists = JsonParser.parseString(response).getAsJsonObject().get("lists");
-        Log.i(TAG, "lists = " + lists);
+            // Skip the wrapper "list"
+            JsonElement lists = JsonParser.parseString(response).getAsJsonObject().get("lists");
+            Log.i(TAG, "lists = " + lists);
 
-        return GSON.fromJson(lists, new TypeToken<List<Car>>() {}.getType());
+            final List<Car> cars = GSON.fromJson(lists, new TypeToken<List<Car>>() {}.getType());
+            callback.accept(cars);
+        });
     }
 
     @Override
-    public Car getCarDetails(String carId) {
-        Log.i(TAG, "Get car details");
-        final String reqUrl = String.format("%s/cars/%s", BASE_URL, carId);
-        String response = makeGetRequest(reqUrl);
-        Log.i(TAG, "Response string = " + response);
-        List<Car> cars = GSON.fromJson(response, new TypeToken<List<Car>>() {}.getType());
-        return cars.isEmpty() ? null : cars.get(0);
+    public void getCarDetails(String carId, Consumer<Car> callback) {
+        executor.execute(() -> {
+            Log.i(TAG, "Get car details");
+            final String reqUrl = String.format("%s/cars/%s", BASE_URL, carId);
+            String response = makeGetRequest(reqUrl);
+            Log.i(TAG, "Response string = " + response);
+            List<Car> cars = GSON.fromJson(response, new TypeToken<List<Car>>() {}.getType());
+            final Car car = cars.isEmpty() ? null : cars.get(0);
+            callback.accept(car);
+        });
     }
 
     private String makeGetRequest(String reqUrl) {
@@ -100,14 +117,16 @@ public class CarServiceImpl implements CarService {
             }
         } catch (MalformedURLException e) {
             Log.e(TAG, "MalformedURLException: " + e.getMessage(), e);
+            throw new CarServiceException("Unable to make GET request", e);
         } catch (ProtocolException e) {
             Log.e(TAG, "ProtocolException: " + e.getMessage(), e);
+            throw new CarServiceException("Unable to make GET request", e);
         } catch (IOException e) {
             Log.e(TAG, "IOException: " + e.getMessage(), e);
+            throw new CarServiceException("Unable to make GET request", e);
         } catch (Exception e) {
             Log.e(TAG, "Exception: " + e.getMessage(), e);
+            throw new CarServiceException("Unable to make GET request", e);
         }
-
-        return null;
     }
 }

@@ -5,10 +5,11 @@ import com.example.project3.model.CarMake;
 import com.example.project3.model.CarModel;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface CarService {
-    List<CarMake> getAvailableCarMakes();
-    List<CarModel> getAvailableCarModels(String makeId);
-    List<Car> getAvailableCars(String makeId, String modelId, String zipCode);
-    Car getCarDetails(String carId);
+    void getAvailableCarMakes(Consumer<List<CarMake>> callback);
+    void getAvailableCarModels(String makeId, Consumer<List<CarModel>> callback);
+    void getAvailableCars(String makeId, String modelId, String zipCode, Consumer<List<Car>> callback);
+    void getCarDetails(String carId, Consumer<Car> callback);
 }
