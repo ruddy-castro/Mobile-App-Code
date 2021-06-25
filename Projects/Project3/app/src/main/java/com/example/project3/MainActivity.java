@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.project3.model.Car;
 import com.example.project3.model.CarMake;
@@ -29,21 +28,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
     private boolean mTwoPane = false;
-    // URLS
-    private static String makesURL = "https://thawing-beach-68207.herokuapp.com/carmakes";
-    private static String modelsURL = "https://thawing-beach-68207.herokuapp.com/carmodelmakes";
-    // Search URL requires more info:
-    //      Available cars: .../<make>/<model>/<zipcode>
-    //      Vehicle Details: .../<carid>
-    private static String searchURL = "https://thawing-beach-68207.herokuapp.com/cars/";
-
     final String TAG = MainActivity.class.getSimpleName();
 
     ArrayList<HashMap<String, String>> makeList;
-    //ArrayList<HashMap<String, String>> modelList;
     ArrayList<String> modelList;
     private RecyclerView rv;
-    private String selectedMake;
     private CarService carService = CarServiceImpl.getInstance();
 
     @Override
@@ -59,9 +48,11 @@ public class MainActivity extends AppCompatActivity{
         final Spinner carMakesSpinner = findViewById(R.id.available_cars);
         final Spinner carModelsSpinner = findViewById(R.id.available_models);
 
-        carMakesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        carMakesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
                 // Extract the selected car make
                 final CarMake carMake = (CarMake) parent.getItemAtPosition(position);
                 Log.i(TAG, "Ly: selected carMake = " + carMake);
@@ -71,10 +62,12 @@ public class MainActivity extends AppCompatActivity{
                     Log.i(TAG, "Ly: car models = " + carModels);
                     setUpSpinnerAdapter(carModelsSpinner, carModels);
 
-                    carModelsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    carModelsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+                    {
 
                         @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+                        {
                             final CarModel carModel = (CarModel) parent.getItemAtPosition(position);
                             Log.i(TAG, "Ruddy: selected carModel = " + carModel);
 
@@ -88,7 +81,7 @@ public class MainActivity extends AppCompatActivity{
                             });
                         }
                         @Override
-                        public void onNothingSelected(AdapterView<?> parent) { }
+                        public void onNothingSelected(AdapterView<?> parent) {}
                     });
                 });
             }
@@ -109,7 +102,8 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-    private <T> void setUpSpinnerAdapter(Spinner s, List<T> data) {
+    private <T> void setUpSpinnerAdapter(Spinner s, List<T> data)
+    {
         ArrayAdapter<T> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -124,7 +118,6 @@ public class MainActivity extends AppCompatActivity{
     class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter <SimpleItemRecyclerViewAdapter.ViewHolder>
     {
         private final List<Car> mCars;
-        private String lastUpdated;
 
         SimpleItemRecyclerViewAdapter(List<Car> items)
         {
@@ -138,13 +131,16 @@ public class MainActivity extends AppCompatActivity{
         }
 
         @Override
-        public void onBindViewHolder (final ViewHolder holder, int position) {
+        public void onBindViewHolder (final ViewHolder holder, int position)
+        {
             holder.mItem = mCars.get(position);
             holder.mIdView.setText(String.valueOf(position + 1));
             holder.mMakeView.setText(mCars.get(position).vehicleMake());
             holder.mPriceView.setText("$" + mCars.get(position).price() + "0");
 
-            holder.mView.setOnClickListener(new View.OnClickListener() {
+
+            holder.mView.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
@@ -160,20 +156,20 @@ public class MainActivity extends AppCompatActivity{
 
                         carService.getCarDetails(mCars.get(position).id(), (carDetails) -> {
                             Log.i(TAG, "Ruddy: car details = " + carDetails);
-                            lastUpdated = carDetails.lastUpdated();
+                            intent.putExtra("lastUpdated", carDetails.lastUpdated());
                         });
 
                         // TODO: Figure out how to send a Car object instead
                         // Doing each string individually for now.
+                        intent.putExtra("id", mCars.get(holder.getAdapterPosition()).id());
                         intent.putExtra("make", mCars.get(holder.getAdapterPosition()).vehicleMake());
                         intent.putExtra("model", mCars.get(holder.getAdapterPosition()).model());
                         intent.putExtra("price", mCars.get(holder.getAdapterPosition()).price());
                         intent.putExtra("description", mCars.get(holder.getAdapterPosition()).vehDescription());
                         intent.putExtra("image", mCars.get(holder.getAdapterPosition()).image_url());
-                        intent.putExtra("lastUpdated", lastUpdated);
 
                         // TODO: Get the last updated from the detailed API
-                        // intent.putExtra("lastUpdate", mCars.get(holder.getAdapterPosition()).createdAt());
+
                         context.startActivity(intent);
                     }
                 }
@@ -181,18 +177,18 @@ public class MainActivity extends AppCompatActivity{
         }
 
         @Override
-        public int getItemCount() {
-            return mCars.size();
-        }
+        public int getItemCount() { return mCars.size(); }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder
+        {
             final View mView;
             final TextView mIdView;
             final TextView mMakeView;
             final TextView mPriceView;
             Car mItem;
 
-            ViewHolder(View itemView) {
+            ViewHolder(View itemView)
+            {
                 super(itemView);
                 mView = itemView;
 

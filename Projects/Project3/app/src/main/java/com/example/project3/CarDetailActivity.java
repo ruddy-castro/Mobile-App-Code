@@ -42,7 +42,7 @@ public class CarDetailActivity extends AppCompatActivity {
         mMakeModel.setText(details.get("make") + " " + details.get("model"));
         mPrice.setText("$" + details.get("price") + "0");
         mDetails.setText(details.get("description"));
-        mLastUpdate.setText(details.get("lastUpdated"));
+        mLastUpdate.setText("Last Updated: " + details.get("lastUpdated"));
 
         // Get image, if available, and set image view with it
         Picasso.get().load(details.get("imageURL")).into(mCarImage);
