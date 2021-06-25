@@ -40,7 +40,9 @@
             android:layout_height="match_parent"
             android:padding="10dp"
             android:layout_margin="5dp"
-            android:layout_below="@+id/available_models" />
+            android:layout_below="@+id/available_models"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/list_item"/>
 
     </RelativeLayout>
 

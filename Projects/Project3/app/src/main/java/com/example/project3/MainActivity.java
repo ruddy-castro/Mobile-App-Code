@@ -28,7 +28,7 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity{
-
+    private boolean mTwoPane = false;
     // URLS
     private static String makesURL = "https://thawing-beach-68207.herokuapp.com/carmakes";
     private static String modelsURL = "https://thawing-beach-68207.herokuapp.com/carmodelmakes";
@@ -39,13 +39,11 @@ public class MainActivity extends AppCompatActivity{
 
     final String TAG = MainActivity.class.getSimpleName();
 
-
     ArrayList<HashMap<String, String>> makeList;
     //ArrayList<HashMap<String, String>> modelList;
     ArrayList<String> modelList;
     private RecyclerView rv;
     private String selectedMake;
-
     private CarService carService = CarServiceImpl.getInstance();
 
     @Override
@@ -87,20 +85,13 @@ public class MainActivity extends AppCompatActivity{
 
                                 runOnUiThread(() -> {
                                     rv.setAdapter(ra);});
-
                             });
-
-
                         }
-
                         @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
+                        public void onNothingSelected(AdapterView<?> parent) { }
                     });
                 });
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
@@ -110,6 +101,11 @@ public class MainActivity extends AppCompatActivity{
             Log.i(TAG, "Ly: car makes = " + carMakes);
             setUpSpinnerAdapter(carMakesSpinner, carMakes);
         });
+
+        // is the container layout available? if so, set mTwoPane to true.
+        if (findViewById(R.id.car_detail_container) != null) {
+            mTwoPane = true;
+        }
     }
 
 
@@ -136,10 +132,8 @@ public class MainActivity extends AppCompatActivity{
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-        {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
-
             return new ViewHolder(view);
         }
 
@@ -153,26 +147,35 @@ public class MainActivity extends AppCompatActivity{
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, CarDetailActivity.class);
+                    if (mTwoPane) {
+                        int selectedCar = holder.getAdapterPosition();
 
-                    carService.getCarDetails(mCars.get(position).id(), (carDetails) -> {
-                        Log.i(TAG, "Ruddy: car details = " + carDetails);
-                        lastUpdated = carDetails.lastUpdated();
-                    });
+                        CarDetailFragment frg = CarDetailFragment.newInstance(selectedCar);
+                        getSupportFragmentManager().beginTransaction().replace(R.id.car_detail_container, frg)
+                                .addToBackStack(null).commit();
+                    }
+                    else {
+                        Context context = v.getContext();
+                        Intent intent = new Intent(context, CarDetailActivity.class);
 
-                    // TODO: Figure out how to send a Car object instead
-                    // Doing each string individually for now.
-                    intent.putExtra("make", mCars.get(holder.getAdapterPosition()).vehicleMake());
-                    intent.putExtra("model", mCars.get(holder.getAdapterPosition()).model());
-                    intent.putExtra("price", mCars.get(holder.getAdapterPosition()).price());
-                    intent.putExtra("description", mCars.get(holder.getAdapterPosition()).vehDescription());
-                    intent.putExtra("image", mCars.get(holder.getAdapterPosition()).image_url());
-                    intent.putExtra("lastUpdated", lastUpdated);
+                        carService.getCarDetails(mCars.get(position).id(), (carDetails) -> {
+                            Log.i(TAG, "Ruddy: car details = " + carDetails);
+                            lastUpdated = carDetails.lastUpdated();
+                        });
 
-                    // TODO: Get the last updated from the detailed API
-                    // intent.putExtra("lastUpdate", mCars.get(holder.getAdapterPosition()).createdAt());
-                    context.startActivity(intent);
+                        // TODO: Figure out how to send a Car object instead
+                        // Doing each string individually for now.
+                        intent.putExtra("make", mCars.get(holder.getAdapterPosition()).vehicleMake());
+                        intent.putExtra("model", mCars.get(holder.getAdapterPosition()).model());
+                        intent.putExtra("price", mCars.get(holder.getAdapterPosition()).price());
+                        intent.putExtra("description", mCars.get(holder.getAdapterPosition()).vehDescription());
+                        intent.putExtra("image", mCars.get(holder.getAdapterPosition()).image_url());
+                        intent.putExtra("lastUpdated", lastUpdated);
+
+                        // TODO: Get the last updated from the detailed API
+                        // intent.putExtra("lastUpdate", mCars.get(holder.getAdapterPosition()).createdAt());
+                        context.startActivity(intent);
+                    }
                 }
             });
         }
@@ -196,7 +199,6 @@ public class MainActivity extends AppCompatActivity{
                 mIdView = itemView.findViewById(R.id.id);
                 mMakeView = itemView.findViewById(R.id.tvMake);
                 mPriceView = itemView.findViewById(R.id.tvPrice);
-
             }
         }
     }
