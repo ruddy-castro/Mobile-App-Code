@@ -1,15 +1,19 @@
 package com.example.project3;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.project3.model.Car;
 import com.example.project3.model.CarMake;
@@ -78,8 +82,10 @@ public class MainActivity extends AppCompatActivity{
                             carService.getAvailableCars(carMake.id(), carModel.id(), "92603", (availableCars) -> {
                                 Log.i(TAG, "Ruddy: available cars = " + availableCars);
 
+                                SimpleItemRecyclerViewAdapter ra = new SimpleItemRecyclerViewAdapter(availableCars);
                                 // TODO: Setup Recycler View for available cars
-
+                                runOnUiThread(() -> {
+                                rv.setAdapter(ra);});
 
                             });
 
@@ -270,5 +276,67 @@ public class MainActivity extends AppCompatActivity{
 //        }
 //    }
 
+    // RecyclerView Adapter Class
+    class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter <SimpleItemRecyclerViewAdapter.ViewHolder>
+    {
+        private final List<Car> mCars;
 
+        SimpleItemRecyclerViewAdapter(List<Car> items)
+        {
+            mCars = items;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder (final ViewHolder holder, int position) {
+            holder.mItem = mCars.get(position);
+            holder.mIdView.setText(String.valueOf(position + 1));
+            holder.mMakeView.setText(mCars.get(position).vehicleMake());
+            holder.mModelView.setText(mCars.get(position).model());
+
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (true)
+                    {
+
+                    }
+
+                    else
+                    {
+                    }
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return mCars.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            final View mView;
+            final TextView mIdView;
+            final TextView mMakeView;
+            final TextView mModelView;
+            Car mItem;
+
+            ViewHolder(View itemView) {
+                super(itemView);
+                mView = itemView;
+
+                mIdView = itemView.findViewById(R.id.id);
+                mMakeView = itemView.findViewById(R.id.tvMake);
+                mModelView = itemView.findViewById(R.id.tvModel);
+
+            }
+        }
+    }
 }
