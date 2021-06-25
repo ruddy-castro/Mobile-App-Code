@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.project3.model.Car;
 import com.example.project3.model.CarMake;
@@ -83,9 +84,9 @@ public class MainActivity extends AppCompatActivity{
                                 Log.i(TAG, "Ruddy: available cars = " + availableCars);
 
                                 SimpleItemRecyclerViewAdapter ra = new SimpleItemRecyclerViewAdapter(availableCars);
-                                // TODO: Setup Recycler View for available cars
+
                                 runOnUiThread(() -> {
-                                rv.setAdapter(ra);});
+                                    rv.setAdapter(ra);});
 
                             });
 
@@ -109,9 +110,6 @@ public class MainActivity extends AppCompatActivity{
             Log.i(TAG, "Ly: car makes = " + carMakes);
             setUpSpinnerAdapter(carMakesSpinner, carMakes);
         });
-
-
-
     }
 
 //    /**
@@ -299,19 +297,25 @@ public class MainActivity extends AppCompatActivity{
             holder.mItem = mCars.get(position);
             holder.mIdView.setText(String.valueOf(position + 1));
             holder.mMakeView.setText(mCars.get(position).vehicleMake());
-            holder.mModelView.setText(mCars.get(position).model());
+            holder.mPriceView.setText("$" + mCars.get(position).price() + "0");
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (true)
-                    {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, CarDetailActivity.class);
 
-                    }
+                    // TODO: Figure out how to send a Car object instead
+                    // Doing each string individually for now.
+                    intent.putExtra("make", mCars.get(holder.getAdapterPosition()).vehicleMake());
+                    intent.putExtra("model", mCars.get(holder.getAdapterPosition()).model());
+                    intent.putExtra("price", mCars.get(holder.getAdapterPosition()).price());
+                    intent.putExtra("description", mCars.get(holder.getAdapterPosition()).vehDescription());
+                    intent.putExtra("image", mCars.get(holder.getAdapterPosition()).image_url());
 
-                    else
-                    {
-                    }
+                    // TODO: Get the last updated from the detailed API
+                    // intent.putExtra("lastUpdate", mCars.get(holder.getAdapterPosition()).createdAt());
+                    context.startActivity(intent);
                 }
             });
         }
@@ -325,7 +329,7 @@ public class MainActivity extends AppCompatActivity{
             final View mView;
             final TextView mIdView;
             final TextView mMakeView;
-            final TextView mModelView;
+            final TextView mPriceView;
             Car mItem;
 
             ViewHolder(View itemView) {
@@ -334,7 +338,7 @@ public class MainActivity extends AppCompatActivity{
 
                 mIdView = itemView.findViewById(R.id.id);
                 mMakeView = itemView.findViewById(R.id.tvMake);
-                mModelView = itemView.findViewById(R.id.tvModel);
+                mPriceView = itemView.findViewById(R.id.tvPrice);
 
             }
         }
