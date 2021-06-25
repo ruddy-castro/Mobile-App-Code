@@ -1,30 +1,23 @@
 package com.example.project3;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
+import com.example.project3.model.Car;
 import com.example.project3.model.CarMake;
 import com.example.project3.model.CarModel;
 import com.example.project3.service.CarService;
 import com.example.project3.service.CarServiceImpl;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,7 +38,7 @@ public class MainActivity extends AppCompatActivity{
     ArrayList<HashMap<String, String>> makeList;
     //ArrayList<HashMap<String, String>> modelList;
     ArrayList<String> modelList;
-    private ListView lv;
+    private RecyclerView rv;
     private String selectedMake;
 
     private CarService carService = CarServiceImpl.getInstance();
@@ -57,7 +50,7 @@ public class MainActivity extends AppCompatActivity{
 
         makeList = new ArrayList<>();
         modelList = new ArrayList<>();
-        lv = findViewById(R.id.list);
+        rv = findViewById(R.id.available_vehicle);
 
         // Initialize spinner for car makes and car models
         final Spinner carMakesSpinner = findViewById(R.id.available_cars);
@@ -73,7 +66,31 @@ public class MainActivity extends AppCompatActivity{
                 // Setup the car models spinner
                 carService.getAvailableCarModels(carMake.id(), (carModels) -> {
                     Log.i(TAG, "Ly: car models = " + carModels);
-                    setUpAdapter(carModelsSpinner, carModels);
+                    setUpSpinnerAdapter(carModelsSpinner, carModels);
+
+                    carModelsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            final CarModel carModel = (CarModel) parent.getItemAtPosition(position);
+                            Log.i(TAG, "Ruddy: selected carModel = " + carModel);
+
+                            carService.getAvailableCars(carMake.id(), carModel.id(), "92603", (availableCars) -> {
+                                Log.i(TAG, "Ruddy: available cars = " + availableCars);
+
+                                // TODO: Setup Recycler View for available cars
+
+
+                            });
+
+
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
                 });
             }
 
@@ -84,8 +101,10 @@ public class MainActivity extends AppCompatActivity{
         // Make a call to get available car makes to setup car make spinner
         carService.getAvailableCarMakes((carMakes) -> {
             Log.i(TAG, "Ly: car makes = " + carMakes);
-            setUpAdapter(carMakesSpinner, carMakes);
+            setUpSpinnerAdapter(carMakesSpinner, carMakes);
         });
+
+
 
     }
 
@@ -189,7 +208,7 @@ public class MainActivity extends AppCompatActivity{
 //        }
 //    }
 //
-    private <T> void setUpAdapter(Spinner s, List<T> data) {
+    private <T> void setUpSpinnerAdapter(Spinner s, List<T> data) {
         ArrayAdapter<T> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 

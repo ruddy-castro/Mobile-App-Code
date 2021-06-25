@@ -10,15 +10,36 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(fluent = true)
 public class Car {
-    @SerializedName("vehicle_make_id")
-    private final String makeId;
+    @SerializedName("color")
+    private final String color;
 
-    @SerializedName("vehicle_model_id")
-    private final String modelId;
+    @SerializedName("created_at")
+    private final String createdAt;
 
-    @SerializedName("vehicle_make")
-    private final String make;
+    @SerializedName("id")
+    private final String id;
+
+    @SerializedName("image_url")
+    private final String image_url;
+
+    @SerializedName("mileage")
+    private final String mileage;
 
     @SerializedName("model")
     private final String model;
+
+    @SerializedName("price")
+    private final String price;
+
+    @SerializedName("veh_description")
+    private final String vehDescription;
+
+    @SerializedName("vehicle_make")
+    private final String vehicleMake;
+
+    @SerializedName("vehicle_url")
+    private final String vehicleUrl;
+
+    @SerializedName("vin_number")
+    private final String vinNumber;
 }
