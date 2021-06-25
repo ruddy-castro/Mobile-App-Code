@@ -42,4 +42,7 @@ public class Car {
 
     @SerializedName("vin_number")
     private final String vinNumber;
+
+    @SerializedName("updated_at")
+    private final String lastUpdated;
 }

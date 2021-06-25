@@ -3,6 +3,6 @@
     <string name="make">Make</string>
     <string name="model">Model</string>
     <string name="make_model">Make - Model</string>
-    <string name="year">Year</string>
+    <string name="price">Price</string>
     <string name="last_update">Last update</string>
 </resources>

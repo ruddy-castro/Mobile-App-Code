@@ -23,15 +23,16 @@
         android:textIsSelectable="true" />
 
     <TextView
-        android:id="@+id/year"
+        android:id="@+id/price"
         style="?android:attr/textAppearanceMedium"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_toEndOf="@id/dummy"
-        android:hint="@string/year"
+        android:hint="@string/price"
         android:padding="10dp"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="true"
+        android:gravity="right"/>
 
     <TextView
         android:id="@+id/car_detail"
@@ -41,16 +42,21 @@
         android:padding="10dp"
         android:layout_margin="5dp"
         android:layout_below="@id/make_model"
-        android:layout_toStartOf="@id/dummy"/>
+        android:layout_toStartOf="@id/dummy"
+        android:textAlignment="center"
+        />
 
     <ImageView
         android:id="@+id/car_image"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="250dp"
         android:padding="10dp"
         android:layout_margin="5dp"
-        android:layout_below="@id/year"
-        android:layout_toEndOf="@id/dummy"/>
+        android:layout_below="@id/price"
+        android:layout_toEndOf="@id/dummy"
+        android:layout_gravity="center"
+        android:scaleType="center"
+        />
 
     <TextView
         android:id="@+id/last_update"
