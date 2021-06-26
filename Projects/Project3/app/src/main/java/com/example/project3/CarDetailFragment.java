@@ -51,7 +51,7 @@ public class CarDetailFragment extends Fragment {
         arguments.putString(ARG_ID, selectedCar.id());
         arguments.putString(ARG_MAKE, selectedCar.vehicleMake());
         arguments.putString(ARG_MODEL, selectedCar.model());
-        arguments.putString(ARG_PRICE, selectedCar.price());
+        arguments.putDouble(ARG_PRICE, selectedCar.price());
         arguments.putString(ARG_DESCRIPTION, selectedCar.vehDescription());
         arguments.putString(ARG_IMAGE, selectedCar.image_url());
         arguments.putString(ARG_LAST_UPDATED, selectedCar.lastUpdated());

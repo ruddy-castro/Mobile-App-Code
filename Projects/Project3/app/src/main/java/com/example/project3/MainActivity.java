@@ -153,19 +153,19 @@ public class MainActivity extends AppCompatActivity{
                         Context context = v.getContext();
                         Intent intent = new Intent(context, CarDetailActivity.class);
 
-                        carService.getCarDetails(mCars.get(position).id(), (carDetails) -> {
-                            Log.i(TAG, "Ruddy: car details = " + carDetails);
-                            intent.putExtra("lastUpdated", carDetails.lastUpdated());
-                        });
+//                        carService.getCarDetails(mCars.get(position).id(), (carDetails) -> {
+//                            Log.i(TAG, "Ruddy: car details = " + carDetails);
+//                            intent.putExtra("lastUpdated", carDetails.lastUpdated());
+//                        });
 
                         // TODO: Figure out how to send a Car object instead
                         // Doing each string individually for now.
                         intent.putExtra("id", mCars.get(holder.getAdapterPosition()).id());
-                        intent.putExtra("make", mCars.get(holder.getAdapterPosition()).vehicleMake());
-                        intent.putExtra("model", mCars.get(holder.getAdapterPosition()).model());
-                        intent.putExtra("price", mCars.get(holder.getAdapterPosition()).price());
-                        intent.putExtra("description", mCars.get(holder.getAdapterPosition()).vehDescription());
-                        intent.putExtra("image", mCars.get(holder.getAdapterPosition()).image_url());
+//                        intent.putExtra("make", mCars.get(holder.getAdapterPosition()).vehicleMake());
+//                        intent.putExtra("model", mCars.get(holder.getAdapterPosition()).model());
+//                        intent.putExtra("price", mCars.get(holder.getAdapterPosition()).price());
+//                        intent.putExtra("description", mCars.get(holder.getAdapterPosition()).vehDescription());
+//                        intent.putExtra("image", mCars.get(holder.getAdapterPosition()).image_url());
 
                         // TODO: Get the last updated from the detailed API
 

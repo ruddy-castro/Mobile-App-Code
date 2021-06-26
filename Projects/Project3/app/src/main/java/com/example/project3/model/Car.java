@@ -29,7 +29,7 @@ public class Car {
     private final String model;
 
     @SerializedName("price")
-    private final String price;
+    private final Double price;
 
     @SerializedName("veh_description")
     private final String vehDescription;
