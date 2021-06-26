@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     private boolean mTwoPane = false;
     final String TAG = MainActivity.class.getSimpleName();
 
@@ -48,50 +48,51 @@ public class MainActivity extends AppCompatActivity{
         final Spinner carMakesSpinner = findViewById(R.id.available_cars);
         final Spinner carModelsSpinner = findViewById(R.id.available_models);
 
-        carMakesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
+        carMakesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // Extract the selected car make
                 final CarMake carMake = (CarMake) parent.getItemAtPosition(position);
-                Log.i(TAG, "Ly: selected carMake = " + carMake);
+                Log.i(TAG, "selected carMake = " + carMake);
 
                 // Setup the car models spinner
                 carService.getAvailableCarModels(carMake.id(), (carModels) -> {
-                    Log.i(TAG, "Ly: car models = " + carModels);
+                    Log.i(TAG, "car models = " + carModels);
                     setUpSpinnerAdapter(carModelsSpinner, carModels);
 
-                    carModelsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-                    {
+                    carModelsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                         @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-                        {
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             final CarModel carModel = (CarModel) parent.getItemAtPosition(position);
-                            Log.i(TAG, "Ruddy: selected carModel = " + carModel);
+                            Log.i(TAG, "selected carModel = " + carModel);
 
                             carService.getAvailableCars(carMake.id(), carModel.id(), "92603", (availableCars) -> {
-                                Log.i(TAG, "Ruddy: available cars = " + availableCars);
+                                Log.i(TAG, "available cars = " + availableCars);
 
                                 SimpleItemRecyclerViewAdapter ra = new SimpleItemRecyclerViewAdapter(availableCars);
 
                                 runOnUiThread(() -> {
-                                    rv.setAdapter(ra);});
+                                    rv.setAdapter(ra);
+                                });
                             });
                         }
+
                         @Override
-                        public void onNothingSelected(AdapterView<?> parent) {}
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
                     });
                 });
             }
+
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         // Make a call to get available car makes to setup car make spinner
         carService.getAvailableCarMakes((carMakes) -> {
-            Log.i(TAG, "Ly: car makes = " + carMakes);
+            Log.i(TAG, "car makes = " + carMakes);
             setUpSpinnerAdapter(carMakesSpinner, carMakes);
         });
 
@@ -102,8 +103,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-    private <T> void setUpSpinnerAdapter(Spinner s, List<T> data)
-    {
+    private <T> void setUpSpinnerAdapter(Spinner s, List<T> data) {
         ArrayAdapter<T> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -115,12 +115,10 @@ public class MainActivity extends AppCompatActivity{
 
 
     // RecyclerView Adapter Class
-    class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter <SimpleItemRecyclerViewAdapter.ViewHolder>
-    {
+    class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
         private final List<Car> mCars;
 
-        SimpleItemRecyclerViewAdapter(List<Car> items)
-        {
+        SimpleItemRecyclerViewAdapter(List<Car> items) {
             mCars = items;
         }
 
@@ -131,16 +129,14 @@ public class MainActivity extends AppCompatActivity{
         }
 
         @Override
-        public void onBindViewHolder (final ViewHolder holder, int position)
-        {
+        public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mCars.get(position);
             holder.mIdView.setText(String.valueOf(position + 1));
             holder.mMakeView.setText(mCars.get(position).vehicleMake());
             holder.mPriceView.setText("$" + mCars.get(position).price() + "0");
 
 
-            holder.mView.setOnClickListener(new View.OnClickListener()
-            {
+            holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
@@ -153,21 +149,9 @@ public class MainActivity extends AppCompatActivity{
                         Context context = v.getContext();
                         Intent intent = new Intent(context, CarDetailActivity.class);
 
-//                        carService.getCarDetails(mCars.get(position).id(), (carDetails) -> {
-//                            Log.i(TAG, "Ruddy: car details = " + carDetails);
-//                            intent.putExtra("lastUpdated", carDetails.lastUpdated());
-//                        });
-
-                        // TODO: Figure out how to send a Car object instead
-                        // Doing each string individually for now.
                         intent.putExtra("id", mCars.get(holder.getAdapterPosition()).id());
                         intent.putExtra("make", mCars.get(holder.getAdapterPosition()).vehicleMake());
                         intent.putExtra("model", mCars.get(holder.getAdapterPosition()).model());
-//                        intent.putExtra("price", mCars.get(holder.getAdapterPosition()).price());
-//                        intent.putExtra("description", mCars.get(holder.getAdapterPosition()).vehDescription());
-//                        intent.putExtra("image", mCars.get(holder.getAdapterPosition()).image_url());
-
-                        // TODO: Get the last updated from the detailed API
 
                         context.startActivity(intent);
                     }
@@ -176,18 +160,18 @@ public class MainActivity extends AppCompatActivity{
         }
 
         @Override
-        public int getItemCount() { return mCars.size(); }
+        public int getItemCount() {
+            return mCars.size();
+        }
 
-        class ViewHolder extends RecyclerView.ViewHolder
-        {
+        class ViewHolder extends RecyclerView.ViewHolder {
             final View mView;
             final TextView mIdView;
             final TextView mMakeView;
             final TextView mPriceView;
             Car mItem;
 
-            ViewHolder(View itemView)
-            {
+            ViewHolder(View itemView) {
                 super(itemView);
                 mView = itemView;
 
