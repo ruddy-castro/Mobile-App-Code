@@ -144,13 +144,12 @@ public class MainActivity extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
-                        int selectedCar = holder.getAdapterPosition();
+                        Car selectedCar = mCars.get(holder.getAdapterPosition());
 
-                        CarDetailFragment frg = CarDetailFragment.newInstance(mCars.get(selectedCar), "");
+                        CarDetailFragment frg = CarDetailFragment.newInstance(selectedCar);
                         getSupportFragmentManager().beginTransaction().replace(R.id.car_detail_container, frg)
                                 .addToBackStack(null).commit();
-                    }
-                    else {
+                    } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, CarDetailActivity.class);
 

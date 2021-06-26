@@ -52,7 +52,6 @@
         android:layout_height="match_parent"
         android:layout_toEndOf="@id/car_list"
         android:layout_weight="3">
-        <include layout="@layout/car_detail" />
     </FrameLayout>
 
 </RelativeLayout>
