@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity{
                     if (mTwoPane) {
                         int selectedCar = holder.getAdapterPosition();
 
-                        CarDetailFragment frg = CarDetailFragment.newInstance(selectedCar);
+                        CarDetailFragment frg = CarDetailFragment.newInstance(mCars.get(selectedCar), "");
                         getSupportFragmentManager().beginTransaction().replace(R.id.car_detail_container, frg)
                                 .addToBackStack(null).commit();
                     }

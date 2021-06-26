@@ -28,7 +28,7 @@ public class CarDetailFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Car mParam1;
     private String mParam2;
 
     public CarDetailFragment() {
@@ -44,11 +44,19 @@ public class CarDetailFragment extends Fragment {
      * @return A new instance of fragment CarDetailFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CarDetailFragment newInstance(String param1, String param2) {
+    public static CarDetailFragment newInstance(Car param1, String param2) {
         CarDetailFragment fragment = new CarDetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        //args.putString(ARG_PARAM1, param1);
+        //args.putString(ARG_PARAM2, param2);
+        args.putString("id", param1.id());
+        args.putString("make", param1.vehicleMake());
+        args.putString("model", param1.model());
+        args.putString("price", param1.price());
+        args.putString("description", param1.vehDescription());
+        args.putString("imageURL", param1.image_url());
+        args.putString("lastUpdated", param1.lastUpdated());
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,7 +89,12 @@ public class CarDetailFragment extends Fragment {
             ((TextView) root.findViewById(R.id.last_update)).setText(details.get("lastUpdated"));
 
             // Get image, if available, and set image view with it
-            Picasso.get().load(details.get("imageURL")).into((ImageView) root.findViewById(R.id.car_image));
+            ImageView iv = root.findViewById(R.id.car_image);
+            Picasso.get().load(details.get("imageURL")).into(iv);
+
+            // if no image available
+            if (iv.getDrawable() == null)
+                Picasso.get().load("https://www.car-info.com/build/images/no_img.jpg?v2.2").into(iv);
         }
         return root;
     }
