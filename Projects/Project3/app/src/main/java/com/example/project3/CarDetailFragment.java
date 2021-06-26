@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.project3.model.Car;
+import com.example.project3.service.CarService;
+import com.example.project3.service.CarServiceImpl;
 import com.squareup.picasso.Picasso;
-
-import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,18 +23,12 @@ public class CarDetailFragment extends Fragment {
     private static final String ARG_ID = "id";
     private static final String ARG_MAKE = "make";
     private static final String ARG_MODEL = "model";
-    private static final String ARG_PRICE = "price";
-    private static final String ARG_DESCRIPTION = "description";
-    private static final String ARG_IMAGE = "imageURL";
-    private static final String ARG_LAST_UPDATED = "lastUpdated";
 
     private String mId;
     private String mMake;
     private String mModel;
-    private String mPrice;
-    private String mDetails;
-    private String mCarImage;
-    private String mLastUpdate;
+
+    private CarService carService = CarServiceImpl.getInstance();
 
     public CarDetailFragment() {
         // Required empty public constructor
@@ -51,10 +45,6 @@ public class CarDetailFragment extends Fragment {
         arguments.putString(ARG_ID, selectedCar.id());
         arguments.putString(ARG_MAKE, selectedCar.vehicleMake());
         arguments.putString(ARG_MODEL, selectedCar.model());
-        arguments.putDouble(ARG_PRICE, selectedCar.price());
-        arguments.putString(ARG_DESCRIPTION, selectedCar.vehDescription());
-        arguments.putString(ARG_IMAGE, selectedCar.image_url());
-        arguments.putString(ARG_LAST_UPDATED, selectedCar.lastUpdated());
 
         frg.setArguments(arguments);
         return frg;
@@ -67,10 +57,6 @@ public class CarDetailFragment extends Fragment {
             mId = getArguments().getString(ARG_ID);
             mMake = getArguments().getString(ARG_MAKE);
             mModel = getArguments().getString(ARG_MODEL);
-            mPrice = getArguments().getString(ARG_PRICE);
-            mDetails = getArguments().getString(ARG_DESCRIPTION);
-            mCarImage = getArguments().getString(ARG_IMAGE);
-            mLastUpdate = getArguments().getString(ARG_LAST_UPDATED);
         }
     }
 
@@ -79,21 +65,25 @@ public class CarDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.car_detail, container, false);
-        //shows the detail info in a TextView
-        if (!mId.isEmpty()) {
-            ((TextView) root.findViewById(R.id.make_model)).setText(mMake + " " + mModel);
-            ((TextView) root.findViewById(R.id.price)).setText("$" + mPrice + "0");
-            ((TextView) root.findViewById(R.id.car_detail)).setText(mDetails);
-            ((TextView) root.findViewById(R.id.last_update)).setText("Last Updated: " + mLastUpdate);
 
-            // Get image, if available, and set image view with it
-            ImageView iv = root.findViewById(R.id.car_image);
-            Picasso.get().load(mCarImage).into(iv);
+        // Show the detail info in a TextView
+        carService.getCarDetails(mId, (car) -> {
+            getActivity().runOnUiThread(() -> {
+                ((TextView) root.findViewById(R.id.make_model)).setText(mMake + " " + mModel);
+                ((TextView) root.findViewById(R.id.price)).setText(String.format("$%.2f", car.price()));
+                ((TextView) root.findViewById(R.id.car_detail)).setText(car.vehDescription());
+                ((TextView) root.findViewById(R.id.last_update)).setText(String.format("Last Updated: %s", car.lastUpdated()));
 
-            // if no image available
-            if (iv.getDrawable() == null)
-                Picasso.get().load("https://www.car-info.com/build/images/no_img.jpg?v2.2").into(iv);
-        }
+                // Get image, if available, and set image view with it
+                ImageView iv = root.findViewById(R.id.car_image);
+                Picasso.get().load(car.image_url()).into(iv);
+
+                // if no image available
+                if (iv.getDrawable() == null)
+                    Picasso.get().load("https://www.car-info.com/build/images/no_img.jpg?v2.2").into(iv);
+
+            });
+        });
         return root;
     }
 }
