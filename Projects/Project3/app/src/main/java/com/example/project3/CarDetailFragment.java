@@ -84,7 +84,7 @@ public class CarDetailFragment extends Fragment {
             ((TextView) root.findViewById(R.id.make_model)).setText(mMake + " " + mModel);
             ((TextView) root.findViewById(R.id.price)).setText("$" + mPrice + "0");
             ((TextView) root.findViewById(R.id.car_detail)).setText(mDetails);
-            ((TextView) root.findViewById(R.id.last_update)).setText(mLastUpdate);
+            ((TextView) root.findViewById(R.id.last_update)).setText("Last Updated: " + mLastUpdate);
 
             // Get image, if available, and set image view with it
             ImageView iv = root.findViewById(R.id.car_image);
