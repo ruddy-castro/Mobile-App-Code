@@ -10,7 +10,11 @@ import com.example.project3.service.CarService;
 import com.example.project3.service.CarServiceImpl;
 import com.squareup.picasso.Picasso;
 
+/**
+ * A class to display car details.
+ */
 public class CarDetailActivity extends AppCompatActivity {
+    //the class initialization parameters
     TextView mMakeModel;
     TextView mPrice;
     TextView mDetails;
@@ -19,11 +23,16 @@ public class CarDetailActivity extends AppCompatActivity {
 
     private CarService carService = CarServiceImpl.getInstance();
 
+    /**
+     * Initialize the activity.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_detail);
 
+        // retrieve the widgets
         mMakeModel = findViewById(R.id.make_model);
         mPrice = findViewById(R.id.price);
         mDetails = findViewById(R.id.car_detail);

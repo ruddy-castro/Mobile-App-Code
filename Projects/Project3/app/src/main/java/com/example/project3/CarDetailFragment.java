@@ -16,6 +16,7 @@ import com.example.project3.service.CarServiceImpl;
 import com.squareup.picasso.Picasso;
 
 /**
+ * A class to display car details in twopane.
  * A simple {@link Fragment} subclass.
  * Use the {@link CarDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -39,6 +40,8 @@ public class CarDetailFragment extends Fragment {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     * @param selectedCar The car to be displayed
+     * @return the fragment
      */
     public static CarDetailFragment newInstance(Car selectedCar) {
         CarDetailFragment frg = new CarDetailFragment();
@@ -52,6 +55,10 @@ public class CarDetailFragment extends Fragment {
         return frg;
     }
 
+    /**
+     * Initialize components for fragment
+     * @param savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +69,13 @@ public class CarDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * Provides the layout for the fragment
+     * @param inflater to inflate the layout for this fragment
+     * @param container the ViewGroup
+     * @param savedInstanceState
+     * @return a View, the root of the fragment's layout
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,6 +83,7 @@ public class CarDetailFragment extends Fragment {
         View root = inflater.inflate(R.layout.car_detail, container, false);
 
         // Show the detail info in a TextView
+        // Update the GUI with car details
         carService.getCarDetails(mId, (car) -> {
             getActivity().runOnUiThread(() -> {
                 ((TextView) root.findViewById(R.id.make_model)).setText(mMake + " " + mModel);

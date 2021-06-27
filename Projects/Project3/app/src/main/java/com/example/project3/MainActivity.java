@@ -27,6 +27,7 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
+    // set twoPane mode to false
     private boolean mTwoPane = false;
     final String TAG = MainActivity.class.getSimpleName();
 

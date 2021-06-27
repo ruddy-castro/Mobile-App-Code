@@ -14,14 +14,12 @@ public interface CarService {
 
     /**
      * Get a list of available car makes.
-     *
      * @param callback the callback function
      */
     void getAvailableCarMakes(Consumer<List<CarMake>> callback);
 
     /**
      * Get a list of car models with the given car make id.
-     *
      * @param makeId the car make id
      * @param callback the callback function
      */
@@ -29,7 +27,6 @@ public interface CarService {
 
     /**
      * Get a list of available cars given the car make id, car model id, and the zip code.
-     *
      * @param makeId the car make id
      * @param modelId the car model id
      * @param zipCode the zip code
@@ -39,7 +36,6 @@ public interface CarService {
 
     /**
      * Get the car details from the given car id.
-     *
      * @param carId the car id
      * @param callback the callback function
      */
