@@ -25,7 +25,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * Main class that handles the application logic by calling the various classes and their methods.
+ */
 public class MainActivity extends AppCompatActivity {
     // set twoPane mode to false
     private boolean mTwoPane = false;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         final Spinner carMakesSpinner = findViewById(R.id.available_cars);
         final Spinner carModelsSpinner = findViewById(R.id.available_models);
 
+        // Setting up listener for the Car make Spinner
         carMakesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -61,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i(TAG, "car models = " + carModels);
                     setUpSpinnerAdapter(carModelsSpinner, carModels);
 
+                    // Setting up listener for the Car model Spinner
                     carModelsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                         @Override
@@ -68,11 +72,15 @@ public class MainActivity extends AppCompatActivity {
                             final CarModel carModel = (CarModel) parent.getItemAtPosition(position);
                             Log.i(TAG, "selected carModel = " + carModel);
 
+                            // using CarService to make the API call to get the available cars
+                            // availableCars is the callBack (this code will run after the function is completed)
                             carService.getAvailableCars(carMake.id(), carModel.id(), "92603", (availableCars) -> {
                                 Log.i(TAG, "available cars = " + availableCars);
 
                                 SimpleItemRecyclerViewAdapter ra = new SimpleItemRecyclerViewAdapter(availableCars);
 
+                                // This is needed since we want to update the UI from a Non-UI thread
+                                // Non-UI thread since we are in the setOnItemSelectedListener scope
                                 runOnUiThread(() -> {
                                     rv.setAdapter(ra);
                                 });
@@ -80,18 +88,17 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
+                        public void onNothingSelected(AdapterView<?> parent) {}
                     });
                 });
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         // Make a call to get available car makes to setup car make spinner
+        // carMakes is the callBack (this code will run after the function is completed)
         carService.getAvailableCarMakes((carMakes) -> {
             Log.i(TAG, "car makes = " + carMakes);
             setUpSpinnerAdapter(carMakesSpinner, carMakes);
@@ -103,7 +110,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * This templated function takes the data and displays it to the designated spinner.
+     * @param s - spinner that will display data
+     * @param data - list of information that will be displayed
+     * @param <T> - template for the type of data
+     */
     private <T> void setUpSpinnerAdapter(Spinner s, List<T> data) {
         ArrayAdapter<T> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, data);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -165,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
             return mCars.size();
         }
 
+        // ViewHolder class for the RecyclerView Adapter
         class ViewHolder extends RecyclerView.ViewHolder {
             final View mView;
             final TextView mIdView;

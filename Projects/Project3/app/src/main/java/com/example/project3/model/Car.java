@@ -6,6 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+/**
+ * A class that represents a Car object. This class uses Lombok to create the getters and setters.
+ * Each variable is serialized based on the JSON attribute name from the given API.
+ */
 @Builder
 @Data
 @Accessors(fluent = true)
