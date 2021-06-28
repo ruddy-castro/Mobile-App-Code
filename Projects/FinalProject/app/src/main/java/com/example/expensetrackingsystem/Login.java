@@ -94,7 +94,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 if(task.isSuccessful())
                 {
                     // redirect user to profile
-                    Intent intent = new Intent(getApplicationContext(), Welcome.class);
+                    Intent intent = new Intent(getApplicationContext(), WelcomeScreen.class);
 
                     // Query to db to find the username of the user logging in
                     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -102,11 +102,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                public void onComplete(@NonNull Task<QuerySnapshot> task)
+                                {
+                                    if (task.isSuccessful())
+                                    {
+                                        for (QueryDocumentSnapshot document : task.getResult())
+                                        {
                                             Log.d("Login: ", document.getId() + " => " + document.getData());
-
                                             String s = document.getString("email");
 
                                             if (document.getString("email").equals(email))
@@ -120,21 +122,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                             }
 
                                             else
-                                            {
                                                 Log.d("Login: ", "Username not found.", task.getException());
-                                            }
                                         }
+                                    }
 
-                                    }
-                                    else {
-                                        Log.w("Login: ", "Error getting documents.", task.getException());
-                                    }
+                                    else
+                                        Log.d("Login: ", "Error getting documents.", task.getException());
 
                                     startActivity(intent);
                                 }
                     });
-
                 }
+
                 else
                 {
                     // Add toast message:
