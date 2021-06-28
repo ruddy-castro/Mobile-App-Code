@@ -10,6 +10,7 @@ package com.example.expensetrackingsystem;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -22,10 +23,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is a class for Login activity.
@@ -83,8 +95,45 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 {
                     // redirect user to profile
                     Intent intent = new Intent(getApplicationContext(), Welcome.class);
-                    intent.putExtra("Username", mAuth.getCurrentUser().getDisplayName());
-                    startActivity(intent);
+
+                    // Query to db to find the username of the user logging in
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    db.collection("users")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Log.d("Login: ", document.getId() + " => " + document.getData());
+
+                                            String s = document.getString("email");
+
+                                            if (document.getString("email").equals(email))
+                                            {
+                                                Log.d("Login: ", "Username found: " + document.getString("username"));
+
+                                                intent.putExtra("username", document.getString("username"));
+                                                startActivity(intent);
+
+                                                break;
+                                            }
+
+                                            else
+                                            {
+                                                Log.d("Login: ", "Username not found.", task.getException());
+                                            }
+                                        }
+
+                                    }
+                                    else {
+                                        Log.w("Login: ", "Error getting documents.", task.getException());
+                                    }
+
+                                    startActivity(intent);
+                                }
+                    });
+
                 }
                 else
                 {

@@ -2,6 +2,7 @@ package com.example.expensetrackingsystem;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -14,11 +15,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firestore.v1.WriteResult;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is a class for Sign-up activity.
@@ -91,14 +102,16 @@ public class Signup extends AppCompatActivity {
                 String username = m_txtUsername.getText().toString().trim();
                 String email = m_txtEmail.getText().toString().trim();
                 String password = m_txtPassword.getText().toString().trim();
+                String phone = m_txtPhone.getText().toString().trim();
 
+                // Using Realtime Database
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task)
                     {
                         if (task.isSuccessful())
                         {
-                            User user = new User(username, email, password);
+                            User user = new User(username, email, password, phone);
 
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -121,6 +134,33 @@ public class Signup extends AppCompatActivity {
                     }
                 });
 
+                // Using Cloud Firestore
+                // Create a new user with a first, middle, and last name
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String, Object> user = new HashMap<>();
+                user.put("email", email);
+                user.put("username", username);
+                user.put("phone", phone);
+
+                // Add a new document with a generated ID
+                db.collection("users")
+                        .add(user)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>()
+                        {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d("Signup: ", "DocumentSnapshot added with ID: " + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("Signup: ", "Error adding document", e);
+                            }
+                        });
+
+                //CollectionReference users = db.collection("users");
+                //users.document(email).set(user);
 
                 // Transition to login activity once validation is done
                 Intent signup = new Intent(getApplicationContext(), Login.class);
@@ -129,3 +169,5 @@ public class Signup extends AppCompatActivity {
         });
     }
 }
+
+// TODO: make sure users are unique
