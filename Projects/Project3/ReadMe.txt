@@ -42,6 +42,6 @@ MainActivity: Main class that handles the application logic by calling the vario
 ------------------------------------------------------------------------------------------------------
 Contributions
 ------------------------------------------------------------------------------------------------------
-Ivy: 
-Ly: 
+Ivy: XMLs, CarDetailFragment, MainActivity, CarDetailActivity
+Ly: Car, CarMake, CarModel, CarService, CarServiceException, CarServiceImpl, MainActivity
 Ruddy: Car, CarDetailActivity, CarDetailFragment, MainActivity, XMLs, readme.txt
