@@ -51,9 +51,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private Button btnSignup, btnLogin;
     private EditText edtUsername, edtPassword;
 
-    // AweseomeValidation for login check
+    // AwesomeValidation for login check
     private AwesomeValidation awesomeValidation;
-
 
     /**
      * Hook method called when the activity is spawned
