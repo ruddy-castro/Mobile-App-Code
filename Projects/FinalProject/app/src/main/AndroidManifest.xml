@@ -9,10 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ExpenseTrackingSystem">
-        <activity android:name=".Welcome"/>
-        <activity android:name=".Signup"/>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".Login">
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/Theme.ExpenseTrackingSystem.NoActionBar"></activity>
+        <activity android:name=".Welcome" />
+        <activity android:name=".Signup" />
+        <activity android:name=".Login"/>
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
