@@ -8,15 +8,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * This is a class for Sign-up activity.
  */
 public class Signup extends AppCompatActivity {
+
+    private FirebaseAuth mAuth;
 
     // GUI elements
     private EditText m_txtUsername;
@@ -39,6 +48,8 @@ public class Signup extends AppCompatActivity {
         // Call super methods
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+
+        mAuth = FirebaseAuth.getInstance();
 
         // Instantiate awesome validation util object
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
@@ -76,9 +87,39 @@ public class Signup extends AppCompatActivity {
                     System.out.println("Validation successful");
                 }
                 
-                // Extract username and password
-                String username = m_txtUsername.getText().toString();
-                String password = m_txtPassword.getText().toString();
+                // Extract email and password
+                String username = m_txtUsername.getText().toString().trim();
+                String email = m_txtEmail.getText().toString().trim();
+                String password = m_txtPassword.getText().toString().trim();
+
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            User user = new User(username, email, password);
+
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+                            database.getReference("Users")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid()) // return ID for registered user
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful())
+                                        Toast.makeText(Signup.this, "User has been registered successfully!", Toast.LENGTH_SHORT).show();
+
+                                    else
+                                        Toast.makeText(Signup.this, "Failed to register! Try again!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                        else
+                            Toast.makeText(Signup.this, "Failed to register! Try again!", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
                 // Transition to login activity once validation is done
