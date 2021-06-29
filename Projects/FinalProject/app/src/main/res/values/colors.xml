@@ -10,4 +10,6 @@
 
     <color name="colorPrimaryBackground">#083377</color>
     <color name="colorTextWhite">#FFF</color>
+    <color name="lightTeal">#F2FBFB</color>
+
 </resources>
