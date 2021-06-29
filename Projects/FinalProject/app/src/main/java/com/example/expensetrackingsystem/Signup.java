@@ -51,6 +51,8 @@ public class Signup extends AppCompatActivity {
     // Util for validating inputs from users
     private AwesomeValidation awesomeValidation;
 
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     private static final String TAG = Signup.class.getSimpleName();
 
     /**
@@ -108,63 +110,45 @@ public class Signup extends AppCompatActivity {
                 String password = m_txtPassword.getText().toString().trim();
                 String phone = m_txtPhone.getText().toString().trim();
 
-                // Using Realtime Database
+                // Add user to the auth database and to the users collection
                 mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            User user = new User(username, email, password, phone);
+                            Map<String, Object> user = new HashMap<>();
+                            user.put("email", email);
+                            user.put("username", username);
+                            user.put("phone", phone);
+//                            final User user = User.builder()
+//                                    .email(email)
+//                                    .username(username)
+//                                    .build();
+                            db.collection("users").document(email).set(user)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.d(TAG, "DocumentSnapshot added with ID: " + email);
+                                            Toast.makeText(Signup.this, "User has been registered successfully!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull @NotNull Exception e) {
+                                            Log.w(TAG, "Error adding document", e);
+                                            Toast.makeText(Signup.this, "Failed to register! Try again!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
 
-                            FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-                            database.getReference("Users")
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid()) // return ID for registered user
-                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful())
-                                        Toast.makeText(Signup.this, "User has been registered successfully!", Toast.LENGTH_SHORT).show();
-
-                                    else
-                                        Toast.makeText(Signup.this, "Failed to register! Try again!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else
+                            // Transition to login activity once validation is done
+                            Intent signup = new Intent(getApplicationContext(), Login.class);
+                            startActivity(signup);
+                        } else {
                             Toast.makeText(Signup.this, "Failed to register! Try again!", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Failed to register", task.getException());
+                        }
                     }
                 });
 
-                // Using Cloud Firestore
-                // Create a new user with a first, middle, and last name
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                Map<String, Object> user = new HashMap<>();
-                user.put("email", email);
-                user.put("username", username);
-                user.put("phone", phone);
-
-                // Add a new document with a generated ID
-                db.collection("users")
-                        .document(email)
-                        .set(user)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d(TAG, "DocumentSnapshot added with ID: " + email);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull @NotNull Exception e) {
-                                Log.w(TAG, "Error adding document", e);
-                            }
-                        });
-
-                //CollectionReference users = db.collection("users");
-                //users.document(email).set(user);
-
-                // Transition to login activity once validation is done
-                Intent signup = new Intent(getApplicationContext(), Login.class);
-                startActivity(signup);
             }
         });
     }

@@ -6,9 +6,10 @@ import lombok.experimental.Accessors;
 
 @Builder
 @Data
+@Accessors(fluent = true)
 public class User {
-    private String username;
-    private String email;
-    private String password;
-    private String phone;
+    private final String username;
+    private final String email;
+    private final String password;
+    private final String phone;
 }
