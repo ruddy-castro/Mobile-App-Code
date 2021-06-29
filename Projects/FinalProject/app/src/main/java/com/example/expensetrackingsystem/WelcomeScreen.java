@@ -18,14 +18,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.expensetrackingsystem.databinding.ActivityWelcomeScreenBinding;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class WelcomeScreen extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityWelcomeScreenBinding binding;
 
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +62,7 @@ public class WelcomeScreen extends AppCompatActivity {
 
     /**
      * Function that inflates the menu options when clicking the ellipse on the action bar.
+     *
      * @param menu the menu object with the choices for the ellipse
      * @return boolean value (true)
      */
@@ -75,6 +75,7 @@ public class WelcomeScreen extends AppCompatActivity {
 
     /**
      * Function that returns the user to the top level destination via the back button.
+     *
      * @return boolean value on if the user chooses to navigate up
      */
     @Override
