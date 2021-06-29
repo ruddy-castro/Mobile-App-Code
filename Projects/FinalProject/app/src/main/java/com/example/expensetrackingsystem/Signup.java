@@ -27,6 +27,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firestore.v1.WriteResult;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,8 +51,11 @@ public class Signup extends AppCompatActivity {
     // Util for validating inputs from users
     private AwesomeValidation awesomeValidation;
 
+    private static final String TAG = Signup.class.getSimpleName();
+
     /**
      * Hook method called when the activity is spawned.
+     *
      * @param savedInstanceState the saved instance statte
      */
     @Override
@@ -96,7 +101,7 @@ public class Signup extends AppCompatActivity {
                 } else {
                     System.out.println("Validation successful");
                 }
-                
+
                 // Extract email and password
                 String username = m_txtUsername.getText().toString().trim();
                 String email = m_txtEmail.getText().toString().trim();
@@ -124,9 +129,7 @@ public class Signup extends AppCompatActivity {
                                         Toast.makeText(Signup.this, "Failed to register! Try again!", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        }
-
-                        else
+                        } else
                             Toast.makeText(Signup.this, "Failed to register! Try again!", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -141,18 +144,18 @@ public class Signup extends AppCompatActivity {
 
                 // Add a new document with a generated ID
                 db.collection("users")
-                        .add(user)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>()
-                        {
+                        .document(email)
+                        .set(user)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d("Signup: ", "DocumentSnapshot added with ID: " + documentReference.getId());
+                            public void onSuccess(Void unused) {
+                                Log.d(TAG, "DocumentSnapshot added with ID: " + email);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("Signup: ", "Error adding document", e);
+                            public void onFailure(@NonNull @NotNull Exception e) {
+                                Log.w(TAG, "Error adding document", e);
                             }
                         });
 
