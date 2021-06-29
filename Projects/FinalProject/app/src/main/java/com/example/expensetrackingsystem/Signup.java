@@ -81,7 +81,7 @@ public class Signup extends AppCompatActivity {
         awesomeValidation.addValidation(this, R.id.txtPhone, "^(?!\\s*$).+", R.string.phone_required_err_msg);
 
         // Other validations
-        awesomeValidation.addValidation(this, R.id.txtUsername, "^[a-zA-Z0-9]([._](?![._])|[a-zA-Z0-9]){6,18}[a-zA-Z0-9]$", R.string.username_format_err_msg);
+        awesomeValidation.addValidation(this, R.id.txtUsername, "^[A-Za-z\\\\s]*$", R.string.username_format_err_msg);
         awesomeValidation.addValidation(this, R.id.txtEmail, Patterns.EMAIL_ADDRESS, R.string.email_format_err_msg);
         awesomeValidation.addValidation(this, R.id.txtPhone, Patterns.PHONE, R.string.phone_format_err_msg);
 
