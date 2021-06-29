@@ -41,14 +41,25 @@ public class WelcomeScreen extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_about)
                 .setDrawerLayout(drawer)
                 .build();
+
+        // Controller that controls the navigation between frags
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_welcome_screen);
+
+        // required to integrate navigation view with the action bar
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+
+        // Setting up both the view and controller together
         NavigationUI.setupWithNavController(navigationView, navController);
     }
 
+    /**
+     * Function that inflates the menu options when clicking the ellipse on the action bar.
+     * @param menu the menu object with the choices for the ellipse
+     * @return boolean value (true)
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -56,6 +67,10 @@ public class WelcomeScreen extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Function that returns the user to the top level destination via the back button.
+     * @return boolean value on if the user chooses to navigate up
+     */
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_welcome_screen);
