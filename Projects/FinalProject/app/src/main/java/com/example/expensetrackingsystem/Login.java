@@ -47,7 +47,7 @@ import java.util.Map;
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
     // Firebase Authentication
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();;
 
     // GUI elements
     private Button btnSignup, btnLogin;
@@ -71,7 +71,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         setContentView(R.layout.activity_login);
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
-        mAuth = FirebaseAuth.getInstance();
 
         // Wiring with GUI
         btnSignup = findViewById(R.id.btnSignup);
@@ -96,11 +95,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    System.out.printf("Ly: mAuth.getCurrentUser() = %s\n", mAuth.getCurrentUser().getDisplayName());
-                    // redirect user to profile
-                    Intent intent = new Intent(getApplicationContext(), WelcomeScreen.class);
-
-
+                    onSignedIn(email);
                 } else {
                     // Add toast message:
                     Toast.makeText(getApplicationContext(), "Failed to Login!",
