@@ -36,6 +36,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,13 +56,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     // AwesomeValidation for login check
     private AwesomeValidation awesomeValidation;
 
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private static final String TAG = Login.class.getSimpleName();
+
     /**
      * Hook method called when the activity is spawned
+     *
      * @param savedInstanceState the saved instance state
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -82,59 +88,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         awesomeValidation.addValidation(this, R.id.txtPassword, "^(?!\\s*$).+", R.string.password_required_err_msg);
     }
 
-    private void userLogin()
-    {
+    private void userLogin() {
         String email = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
 
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
+                    System.out.printf("Ly: mAuth.getCurrentUser() = %s\n", mAuth.getCurrentUser().getDisplayName());
                     // redirect user to profile
                     Intent intent = new Intent(getApplicationContext(), WelcomeScreen.class);
 
-                    // Query to db to find the username of the user logging in
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    db.collection("users")
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task)
-                                {
-                                    if (task.isSuccessful())
-                                    {
-                                        for (QueryDocumentSnapshot document : task.getResult())
-                                        {
-                                            Log.d("Login: ", document.getId() + " => " + document.getData());
-                                            String s = document.getString("email");
 
-                                            if (document.getString("email").equals(email))
-                                            {
-                                                Log.d("Login: ", "Username found: " + document.getString("username"));
-
-                                                intent.putExtra("username", document.getString("username"));
-                                                startActivity(intent);
-
-                                                break;
-                                            }
-
-                                            else
-                                                Log.d("Login: ", "Username not found.", task.getException());
-                                        }
-                                    }
-
-                                    else
-                                        Log.d("Login: ", "Error getting documents.", task.getException());
-
-                                    startActivity(intent);
-                                }
-                    });
-                }
-
-                else
-                {
+                } else {
                     // Add toast message:
                     Toast.makeText(getApplicationContext(), "Failed to Login!",
                             Toast.LENGTH_SHORT).show();
@@ -147,24 +114,43 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        //updateUI(currentUser);
+
+        if (currentUser != null) {
+            onSignedIn(currentUser.getEmail());
+        }
     }
 
-    private void updateUI(FirebaseUser currentUser)
-    {
-        // Transition to login activity once validation is done
-        Intent welcome = new Intent(getApplicationContext(), Welcome.class);
-        welcome.putExtra("username", currentUser.getDisplayName());
-        startActivity(welcome);
+    private void onSignedIn(String email) {
+        Log.i(TAG, String.format("Signing in with email '%s'", email));
+        Intent welcomeIntent = new Intent(getApplicationContext(), WelcomeScreen.class);
+
+        // Query to db to find the username of the user logging in
+        db.collection("users")
+                .document(email).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            final DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                final String username = document.getString("username");
+                                Log.d(TAG, "Username found: " + username);
+                                welcomeIntent.putExtra("username", username);
+                                startActivity(welcomeIntent);
+                            } else {
+                                Log.d(TAG, "Document does not exist");
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
     }
 
     @Override
-    public void onClick(View v)
-    {
-        switch (v.getId())
-        {
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.btnSignup:
                 // Transition to Signup page
                 Intent signup = new Intent(getApplicationContext(), Signup.class);
