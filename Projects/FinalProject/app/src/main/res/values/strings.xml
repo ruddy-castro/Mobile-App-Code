@@ -34,4 +34,9 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="companyName">Expense Tracking System</string>
+    <string name="about">About</string>
+    <string name="aboutCompany">Expense Tracker is an application that will calculate the daily expenses and annual saving amount of a user based on the inputted annual income, desired saving goal, and maximum daily expenses. The amount of savings a user has available will be automatically adjusted whenever a user either under or over the desired goal. The application will generate a desired report that the user chooses. The types of reports available will be Daily Expenses report, Daily Savings report, or a Specific Item report.</string>
 </resources>
