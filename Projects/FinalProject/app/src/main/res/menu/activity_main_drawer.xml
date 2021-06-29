@@ -21,5 +21,10 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_baseline_person_24"
             android:title="@string/about" />
+
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_baseline_help_outline_24"
+            android:title="@string/helpCenter" />
     </group>
 </menu>
