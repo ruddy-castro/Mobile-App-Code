@@ -18,6 +18,11 @@
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
+        android:id="@+id/nav_about"
+        android:name="com.example.expensetrackingsystem.ui.about.AboutUs"
+        android:label="@string/about"
+        tools:layout="@layout/fragment_about_us" />
+    <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.example.expensetrackingsystem.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
