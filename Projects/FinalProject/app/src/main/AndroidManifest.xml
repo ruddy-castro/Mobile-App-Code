@@ -16,7 +16,6 @@
             android:name=".WelcomeScreen"
             android:label="@string/title_activity_welcome_screen"
             android:theme="@style/Theme.ExpenseTrackingSystem.NoActionBar" />
-        <activity android:name=".Welcome" />
         <activity android:name=".Signup" />
         <activity android:name=".Login" />
         <activity android:name=".SplashActivity">

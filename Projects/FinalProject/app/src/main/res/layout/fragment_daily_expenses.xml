@@ -4,24 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
-    tools:context=".Welcome">
+    tools:context=".ui.reports.DailyExpensesFragment">
 
     <TextView
-        android:id="@+id/txtWelcome"
+        android:id="@+id/text_daily_expenses"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_margin="32dp"
-        android:background="@drawable/border"
-        android:ellipsize="middle"
-        android:ems="10"
-        android:gravity="center_vertical"
-        android:hint="@string/welcome"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColorHint="@color/black"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

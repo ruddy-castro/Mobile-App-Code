@@ -62,4 +62,8 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="back">Back</string>
     <string name="expanse_list">Expanse List</string>
+    <string name="data_entry">Data Entry</string>
+    <string name="daily_expenses">Daily Expenses</string>
+    <string name="daily_savings">Daily Savings</string>
+    <string name="itemized_list">Itemized List</string>
 </resources>
