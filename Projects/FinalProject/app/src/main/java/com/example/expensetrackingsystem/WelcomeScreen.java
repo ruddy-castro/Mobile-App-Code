@@ -54,10 +54,10 @@ public class WelcomeScreen extends AppCompatActivity {
                 .setDrawerLayout(drawer)
                 .build();
 
-        // TODO: Fix this
+        // TODO: Fix this. Won't find text view id
         // Displaying username in drawer menu
 //        String username = getIntent().getStringExtra("username");
-//        navUsername = findViewById(R.id.drwTV);
+//        navUsername = findViewById(R.id.drwTitle);
 //        navUsername.setText(username);
 
         // Controller that controls the navigation between frags

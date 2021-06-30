@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.search.SearchFragment">
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -17,11 +17,12 @@
         android:padding="15dp">
 
         <TextView
-            android:id="@+id/txtBack"
+            android:id="@+id/txtBackS"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:text="@string/back"
+            android:textColor="@color/blue"
             android:layout_centerVertical="true"
             android:clickable="true"/>
 
@@ -29,18 +30,11 @@
             android:id="@+id/txtExpense"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="@string/expense_list" />
-
-        <TextView
-            android:id="@+id/txtNew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="New"
-            android:layout_centerVertical="true"
-            android:clickable="true"/>
+            android:layout_centerInParent="true"
+            android:text="@string/expense_list"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

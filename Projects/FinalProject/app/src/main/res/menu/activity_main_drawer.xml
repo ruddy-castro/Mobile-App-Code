@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
+
     <item android:title="Reports">
         <menu>
+            <group android:checkableBehavior="single">
             <item
                 android:id="@+id/nav_daily_expenses"
                 android:icon="@drawable/ic_baseline_money_off_24"
@@ -19,7 +21,7 @@
                 android:id="@+id/nav_itemized_report"
                 android:icon="@drawable/ic_baseline_list_24"
                 android:title="@string/itemized_list"/>
-
+            </group>
         </menu>
     </item>
 

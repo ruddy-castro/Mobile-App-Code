@@ -19,7 +19,6 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
     private SearchViewModel searchViewModelViewModel;
     private FragmentSearchBinding binding;
     private TextView txtBack;
-    private TextView txtNew;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -30,10 +29,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         View root = binding.getRoot();
 
         // Wire TextViews from Search and set up their listeners
-        txtBack = (TextView) root.findViewById(R.id.txtBack);
-        txtNew = (TextView) root.findViewById(R.id.txtNew);
+        txtBack = (TextView) root.findViewById(R.id.txtBackS);
         txtBack.setOnClickListener(this);
-        txtNew.setOnClickListener(this);
 
         return root;
     }
@@ -49,12 +46,8 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         switch (v.getId())
         {
             // TODO: Add specific code for each listener
-            case R.id.txtBack:
+            case R.id.txtBackS:
                 txtBack.setTextColor(Color.RED);
-                break;
-
-            case R.id.txtNew:
-                txtNew.setTextColor(Color.BLUE);
                 break;
         }
     }
