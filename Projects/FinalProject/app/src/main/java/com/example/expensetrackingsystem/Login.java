@@ -87,7 +87,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 if (task.isSuccessful()) {
                     onSignedIn(email);
                 } else {
-                    // Add toast message:
+                    // Add toast message
+                    Log.i(TAG, "Failed to login!");
                     Toast.makeText(getApplicationContext(), "Failed to Login!",
                             Toast.LENGTH_SHORT).show();
                 }
