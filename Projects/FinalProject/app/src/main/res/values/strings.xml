@@ -63,4 +63,9 @@
     <string name="daily_expenses">Daily Expenses</string>
     <string name="daily_savings">Daily Savings</string>
     <string name="itemized_list">Itemized List</string>
+    <string name="btnNew">New</string>
+    <string name="btnBack">Back</string>
+    <string name="expense">Expenses</string>
+    <string name="savings">Savings</string>
+    <string name="itemName">The Item</string>
 </resources>
