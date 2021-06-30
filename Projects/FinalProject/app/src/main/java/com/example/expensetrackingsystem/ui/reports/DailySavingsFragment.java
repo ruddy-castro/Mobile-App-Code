@@ -27,6 +27,7 @@ public class DailySavingsFragment extends Fragment {
         binding = FragmentDailySavingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        /*
         final TextView textView = binding.textDailySavings;
         dailySavingsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -34,6 +35,7 @@ public class DailySavingsFragment extends Fragment {
                 textView.setText(s);
             }
         });
+        */
         return root;
     }
 

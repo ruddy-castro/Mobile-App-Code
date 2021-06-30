@@ -27,6 +27,7 @@ public class ItemizedReportFragment extends Fragment {
         binding = FragmentItemizedReportBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        /*
         final TextView textView = binding.textItemizedReport;
         itemizedReportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -34,6 +35,7 @@ public class ItemizedReportFragment extends Fragment {
                 textView.setText(s);
             }
         });
+        */
         return root;
     }
 
