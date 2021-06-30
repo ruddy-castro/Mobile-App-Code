@@ -49,9 +49,8 @@ public class WelcomeScreen extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_about, R.id.nav_help,
-                R.id.nav_search, R.id.nav_data_entry, R.id.nav_daily_expenses, R.id.nav_itemized_report,
-                R.id.nav_daily_savings)
+                R.id.nav_about, R.id.nav_help, R.id.nav_search, R.id.nav_data_entry,
+                R.id.nav_daily_expenses, R.id.nav_itemized_report, R.id.nav_daily_savings)
                 .setDrawerLayout(drawer)
                 .build();
 
