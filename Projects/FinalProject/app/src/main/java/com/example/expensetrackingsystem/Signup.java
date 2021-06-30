@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.example.expensetrackingsystem.model.Settings;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -110,7 +111,26 @@ public class Signup extends AppCompatActivity {
                                     .email(email)
                                     .username(username)
                                     .build();
+
+                            // Add new user to DB
                             db.collection("users").document(email).set(user)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Log.d(TAG, "DocumentSnapshot added with ID: " + email);
+                                            Toast.makeText(Signup.this, "User has been registered successfully!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull @NotNull Exception e) {
+                                            Log.w(TAG, "Error adding document", e);
+                                            Toast.makeText(Signup.this, "Failed to register! Try again!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
+                            // Add new settings for the user to DB
+                            db.collection("settings").document(email).set(Settings.builder().build())
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
