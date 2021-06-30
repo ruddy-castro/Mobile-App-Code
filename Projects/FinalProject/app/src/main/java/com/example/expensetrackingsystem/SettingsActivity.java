@@ -15,19 +15,19 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceScreen;
 
-import com.example.expensetrackingsystem.model.Settings;
-import com.google.android.gms.tasks.OnCompleteListener;
+import com.example.expensetrackingsystem.model.ExpenseType;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.common.collect.ImmutableMap;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -99,10 +99,16 @@ public class SettingsActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                             Log.i(TAG, "Got expense types document successfully");
-                            queryDocumentSnapshots.getDocuments().forEach(document -> {
-                                final Preference preference = buildExpenseTypePreference(document);
+                            List<DocumentSnapshot> documents = queryDocumentSnapshots.getDocuments();
+                            for (int i = 0; i < documents.size(); i++) {
+                                final DocumentSnapshot document = documents.get(i);
+                                final EditTextPreference preference = buildExpenseTypePreference(document.getId(), document.get("itemName").toString());
+                                preference.setOrder(i);
                                 expenseTypesCategory.addPreference(preference);
-                            });
+                            };
+
+                            // Add the "Add new expense" preference at the end
+                            final EditTextPreference preference = buildNewExpenseTypePreference(documents.size(), expenseTypesCategory);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -170,20 +176,19 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
 
-        EditTextPreference buildExpenseTypePreference(DocumentSnapshot expenseTypeDocument) {
-            final String expenseType = expenseTypeDocument.get("itemName", String.class);
+        EditTextPreference buildExpenseTypePreference(String documentId, String expenseType) {
             Log.i(TAG, String.format("Expense type: %s", expenseType));
             final EditTextPreference preference = new EditTextPreference(getContext());
             preference.setText(expenseType);
             preference.setPersistent(false);
-            preference.setKey(expenseTypeDocument.getId());
+            preference.setKey(documentId);
             preference.setSummaryProvider(EditTextPreference.SimpleSummaryProvider.getInstance());
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     final String newVal = newValue.toString();
                     final String field = "itemName";
-                    db.collection("expenseTypes").document(expenseTypeDocument.getId()).update(field, newVal)
+                    db.collection("expenseTypes").document(documentId).update(field, newVal)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
@@ -199,6 +204,42 @@ public class SettingsActivity extends AppCompatActivity {
                     return true;
                 }
             });
+            return preference;
+        }
+
+        EditTextPreference buildNewExpenseTypePreference(int order, PreferenceCategory expenseTypesCategory) {
+            final EditTextPreference preference = new EditTextPreference(getContext());
+            preference.setOrder(order);
+            preference.setPersistent(false);
+            preference.setKey("new_expense_type");
+            preference.setTitle("New Expense");
+            preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    final String newVal = newValue.toString();
+                    final ExpenseType expenseType = ExpenseType.builder()
+                            .email(mAuth.getCurrentUser().getEmail())
+                            .itemName(newVal)
+                            .build();
+                    db.collection("expenseTypes").add(expenseType)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.i(TAG, String.format("%s is saved successfully", expenseType));
+                                    expenseTypesCategory.addPreference(buildExpenseTypePreference(documentReference.getId(), expenseType.getItemName()));
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull @NotNull Exception e) {
+                                    Log.i(TAG, String.format("Failed to save %s", expenseType));
+                                }
+                            });
+                    preference.setOrder(preference.getOrder() + 1);
+                    return true;
+                }
+            });
+            expenseTypesCategory.addPreference(preference);
             return preference;
         }
 
