@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Expense Tracking System</string>
-    <string name="username">User name</string>
+    <string name="username">Username</string>
+    <string name="email_hint">Email</string>
     <string name="password">Password</string>
     <string name="signup">Signup</string>
     <string name="login">Login</string>
@@ -8,6 +9,7 @@
     <string name="email">Email</string>
     <string name="phone">Phone</string>
     <string name="signmeup">Sign me up!</string>
+    <string name="amount_hint">Amount</string>
 
     <!--  Error messages  -->
     <string name="username_required_err_msg">Username is Required</string>
