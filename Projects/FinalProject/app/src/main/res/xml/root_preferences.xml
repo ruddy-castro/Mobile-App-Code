@@ -1,23 +1,28 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/messages_header">
+    <PreferenceCategory app:title="@string/user_info_header">
 
         <EditTextPreference
-            app:key="signature"
-            app:title="@string/signature_title"
-            app:useSimpleSummaryProvider="true" />
+            app:key="annual_income"
+            app:title="@string/annual_income_title"
+            app:useSimpleSummaryProvider="true"
+            />
 
-        <ListPreference
-            app:defaultValue="reply"
-            app:entries="@array/reply_entries"
-            app:entryValues="@array/reply_values"
-            app:key="reply"
-            app:title="@string/reply_title"
-            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="max_daily_expense"
+            app:title="@string/max_daily_expense_title"
+            app:useSimpleSummaryProvider="true"
+            />
+
+        <EditTextPreference
+            app:key="saving_goal"
+            app:title="@string/saving_goal_title"
+            app:useSimpleSummaryProvider="true"
+            />
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sync_header">
+    <PreferenceCategory app:title="@string/expense_types_header">
 
         <SwitchPreferenceCompat
             app:key="sync"
@@ -29,6 +34,11 @@
             app:summaryOff="@string/attachment_summary_off"
             app:summaryOn="@string/attachment_summary_on"
             app:title="@string/attachment_title" />
+
+        <EditTextPreference
+            app:key="add_expense_type"
+            app:title="@string/add_expense_type_title"
+            />
 
     </PreferenceCategory>
 
