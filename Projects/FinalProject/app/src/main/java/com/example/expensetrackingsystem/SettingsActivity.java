@@ -60,11 +60,16 @@ public class SettingsActivity extends AppCompatActivity {
                 "saving_goal", "savingGoal"
         );
 
+        private static Map<String, Boolean> m_expenseTypes;
+
         private EditTextPreference m_newExpenseTypePreference;
+
+        PreferenceCategory m_expenseTypesCategory;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
+            m_expenseTypesCategory = new PreferenceCategory(getContext());
 
             // Extract preferences
             PreferenceManager preferenceManager = getPreferenceManager();
@@ -84,15 +89,15 @@ public class SettingsActivity extends AppCompatActivity {
 
             // Add expense type list as preferences
             PreferenceScreen preferenceScreen = preferenceManager.getPreferenceScreen();
-            PreferenceCategory expenseTypesCategory = new PreferenceCategory(getContext());
-            expenseTypesCategory.setTitle(R.string.expense_types_header);
-            preferenceScreen.addPreference(expenseTypesCategory);
+
+            m_expenseTypesCategory.setTitle(R.string.expense_types_header);
+            preferenceScreen.addPreference(m_expenseTypesCategory);
 
             // Initialize preference values
-            initializePreferencesValue(expenseTypesCategory, annualIncomePreference, maxDailyExpensePreference, savingGoalPreference);
+            initializePreferencesValue(annualIncomePreference, maxDailyExpensePreference, savingGoalPreference);
 
             // Add the "Add new expense" preference at the end
-            m_newExpenseTypePreference = buildNewExpenseTypePreference(expenseTypesCategory);
+            m_newExpenseTypePreference = buildNewExpenseTypePreference();
         }
 
         private void addListenerToOnUpdatePreference(Preference preference) {
@@ -120,7 +125,7 @@ public class SettingsActivity extends AppCompatActivity {
             });
         }
 
-        private void initializePreferencesValue(PreferenceCategory expenseTypesCategory, EditTextPreference... preferences) {
+        private void initializePreferencesValue(EditTextPreference... preferences) {
             // Get the preference value from db
             final String email = mAuth.getCurrentUser().getEmail();
             db.collection("settings").document(email).get()
@@ -140,12 +145,11 @@ public class SettingsActivity extends AppCompatActivity {
                         }
 
                         // Init expense type category preference
-                        final Map<String, Boolean> expenseTypes = (Map<String, Boolean>) documentSnapshot.get("expenseTypes");
-                        if (expenseTypes != null) {
-                            for (String expenseType : expenseTypes.keySet()) {
-                                final EditTextPreference preference = buildExpenseTypePreference(expenseType);
-                                expenseTypesCategory.addPreference(preference);
-                            }
+                        m_expenseTypes = (Map<String, Boolean>) documentSnapshot.get("expenseTypes");
+                        m_expenseTypes = m_expenseTypes == null ? new HashMap<>() : m_expenseTypes;
+                        for (String expenseType : m_expenseTypes.keySet()) {
+                            final EditTextPreference preference = buildExpenseTypePreference(expenseType);
+                            m_expenseTypesCategory.addPreference(preference);
                         }
                     }
                 })
@@ -178,19 +182,29 @@ public class SettingsActivity extends AppCompatActivity {
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    final String prevVal = ((EditTextPreference) preference).getText();
                     final String newVal = newValue.toString();
-                    final String field = "itemName";
-                    db.collection("settings").document(email).update(field, newVal)
+                    Map<String, Object> updates = new HashMap<>();
+
+                    m_expenseTypes.remove(prevVal);
+                    if (newVal.isEmpty()) {
+                        m_expenseTypesCategory.removePreference(preference);
+                    } else {
+                        m_expenseTypes.put(newVal, true);
+                    }
+                    Log.i(TAG, "m_expenseTypes = " + m_expenseTypes);
+                    updates.put("expenseTypes", m_expenseTypes);
+                    db.collection("settings").document(email).update(updates)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Log.i(TAG, String.format("%s is saved successfully", field));
+                                    Log.i(TAG, String.format("%s is saved successfully", newVal));
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull @NotNull Exception e) {
-                                    Log.i(TAG, String.format("Failed to save %s", field));
+                                    Log.i(TAG, String.format("Failed to save %s", newVal));
                                 }
                             });
                     return true;
@@ -199,7 +213,7 @@ public class SettingsActivity extends AppCompatActivity {
             return preference;
         }
 
-        EditTextPreference buildNewExpenseTypePreference(PreferenceCategory expenseTypesCategory) {
+        EditTextPreference buildNewExpenseTypePreference() {
             final EditTextPreference preference = new EditTextPreference(getContext());
             preference.setPersistent(false);
             preference.setKey("new_expense_type");
@@ -209,17 +223,20 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     final String newVal = newValue.toString();
+                    if (newVal.isEmpty()) {
+                        return false;
+                    }
                     Map<String, Object> updates = new HashMap<>();
-                    Map<String, Object> expenseTypes = new HashMap<>();
-                    expenseTypes.put(newVal, true);
-                    updates.put("expenseTypes", expenseTypes);
+                    m_expenseTypes.put(newVal, true);
+                    updates.put("expenseTypes", m_expenseTypes);
+                    Log.i(TAG, "m_expenseTypes = " + m_expenseTypes);
                     final String email = mAuth.getCurrentUser().getEmail();
                     db.collection("settings").document(email).update(updates)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
                                     Log.i(TAG, String.format("%s is saved successfully", newVal));
-                                    expenseTypesCategory.addPreference(buildExpenseTypePreference(newVal));
+                                    m_expenseTypesCategory.addPreference(buildExpenseTypePreference(newVal));
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -231,7 +248,7 @@ public class SettingsActivity extends AppCompatActivity {
                     return false;
                 }
             });
-            expenseTypesCategory.addPreference(preference);
+            m_expenseTypesCategory.addPreference(preference);
             return preference;
         }
 
