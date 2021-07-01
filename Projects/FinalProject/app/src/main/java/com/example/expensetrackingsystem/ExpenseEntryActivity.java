@@ -24,6 +24,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,7 +71,16 @@ public class ExpenseEntryActivity extends AppCompatActivity {
         m_btnAddExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Timestamp timestamp = new Timestamp(new Date());
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                Timestamp timestamp;
+                try {
+                    Date date = df.parse(m_txtDate.getText().toString());
+                    Log.i(TAG, "date = " + date);
+                    timestamp = new Timestamp(date);
+                } catch (ParseException e) {
+                    Log.w(TAG, "Unable to parse the date");
+                    return;
+                }
                 Expense expense = Expense.builder()
                         .amount(Double.parseDouble(m_txtAmount.getText().toString()))
                         .expenseType(m_spinnerExpenseType.getSelectedItem().toString())
