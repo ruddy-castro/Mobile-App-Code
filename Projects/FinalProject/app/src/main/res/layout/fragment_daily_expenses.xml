@@ -7,20 +7,6 @@
     android:layout_margin="8dp"
     tools:context=".ui.reports.DailyExpensesFragment">
 
-    <Button
-        android:id="@+id/btnDeNew"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="@string/btnNew"
-        android:textColor="@color/teal_700"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
     <com.anychart.AnyChartView
         android:id="@+id/dailyExpensesChart"
         android:layout_width="match_parent"
@@ -29,16 +15,16 @@
         android:background="@color/lightTeal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.862"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.122" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/expenses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="25dp"
+        android:layout_margin="15dp"
         android:fontFamily="sans-serif-medium"
         android:text="@string/expense"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -48,20 +34,51 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.47" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/expensesList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="15dp"
+        app:layoutManager="LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/expenses"
-        app:layout_constraintVertical_bias="0.0"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/report_list_item"/>
+        app:layout_constraintVertical_bias="0.482"
+        tools:listitem="@layout/report_list_item" />
+
+    <EditText
+        android:id="@+id/editTextDate"
+        android:layout_width="105dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="36dp"
+        android:ems="10"
+        android:hint="Date"
+        android:inputType="date"
+        android:text="05/27/2021"
+
+        app:layout_constraintBottom_toTopOf="@+id/expensesList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.267"
+        app:layout_constraintStart_toEndOf="@+id/expenses"
+        app:layout_constraintTop_toBottomOf="@+id/dailyExpensesChart"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="51dp"
+        android:text="Generate"
+        app:layout_constraintBottom_toTopOf="@+id/expensesList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.575"
+        app:layout_constraintStart_toEndOf="@+id/editTextDate"
+        app:layout_constraintTop_toBottomOf="@+id/dailyExpensesChart"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

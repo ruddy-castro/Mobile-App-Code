@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -30,7 +31,13 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.anychart.AnyChart;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.charts.Cartesian;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import java.util.stream.Collectors;
@@ -40,7 +47,7 @@ public class DailyExpensesFragment extends Fragment {
     private FragmentDailyExpensesBinding binding;
     private List<DataEntry> data;
 
-    private Button mNew;
+    private TextView mDate;
     private AnyChartView mExpenseChart;
     private RecyclerView rvExpense;
 
@@ -57,7 +64,7 @@ public class DailyExpensesFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         // Retrieve the widgets
-        mNew = root.findViewById(R.id.btnDeNew);
+        mDate = root.findViewById(R.id.editTextDate);
         rvExpense = root.findViewById(R.id.expensesList);
         rvExpense.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -68,7 +75,30 @@ public class DailyExpensesFragment extends Fragment {
 
         // Query Firestore for data
         final String email = mAuth.getCurrentUser().getEmail();
-        db.collection("expenses").whereEqualTo("email", email).get()
+
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        Date date = null;
+        Calendar c = Calendar.getInstance();
+        Calendar c2 = Calendar.getInstance();
+        try {
+            //date = df.parse(mDate.getText().toString());
+            // Hardcoding for now
+            date = df.parse("05/27/2021");
+            c.setTime(date);
+            c2.setTime(date);
+        } catch (ParseException e) { }
+
+        c.add(Calendar.DATE, 1);
+        c.add(Calendar.DATE, -1);
+        Date fromDate = c2.getTime();
+        Date toDate = c.getTime();
+
+
+
+        // TODO: Figure out how to query for a specific day
+        db.collection("expenses").whereEqualTo("email", email)
+                .whereGreaterThanOrEqualTo("timestamp", fromDate)
+                .whereLessThanOrEqualTo("timestamp", toDate).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -85,7 +115,7 @@ public class DailyExpensesFragment extends Fragment {
 
                         // Adding data into chart data list
                         for (int i = 0; i < expenses.size(); i++)
-                            data.add(new ValueDataEntry(expenses.get(i).getTimestamp().toDate().toString(), expenses.get(i).getAmount()));
+                            data.add(new ValueDataEntry(expenses.get(i).getExpenseType().toString(), expenses.get(i).getAmount()));
 
                         populateChart(cartesian, mExpenseChart);
                     }
@@ -94,8 +124,6 @@ public class DailyExpensesFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull @NotNull Exception e) {}
                 });
-
-
 
         return root;
     }
