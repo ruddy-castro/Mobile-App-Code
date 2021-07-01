@@ -6,12 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.core.cartesian.series.Column;
@@ -31,7 +28,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.anychart.AnyChart;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.charts.Cartesian;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,11 +38,13 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import java.util.stream.Collectors;
 
+/**
+ * The fragment to show the daily expenses graph and list
+ */
 public class DailyExpensesFragment extends Fragment implements View.OnClickListener {
 
     private FragmentDailyExpensesBinding binding;
     private List<DataEntry> data;
-
     private TextView mDate;
     private AnyChartView mExpenseChart;
     private RecyclerView rvExpense;
@@ -57,13 +55,12 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    // Provide the layout for the fragment
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentDailyExpensesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
 
         // Retrieve the widgets
         mGenerate = root.findViewById(R.id.btnGenerate);
@@ -74,8 +71,10 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
         mExpenseChart = root.findViewById(R.id.dailyExpensesChart);
         data = new ArrayList<>();
 
+        // Set on click listener for the button
         mGenerate.setOnClickListener(this);
 
+        // Cartesian to set up the chart
         cartesian= AnyChart.column();
         cartesian.animation(true);
         cartesian.title("Daily Expenses Per Item");
@@ -86,22 +85,21 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
         cartesian.xAxis(0).title("Product");
         cartesian.yAxis(0).title("Expense");
 
+        // setup the chart
         mExpenseChart.setChart(cartesian);
 
         return root;
     }
 
+    /**
+     * Populate the chart using cartesian.
+     * @param cartesian
+     */
     private void populateChart(Cartesian cartesian) {
         Column column = cartesian.column(data);
-        column.tooltip()
-                .titleFormat("{%X}")
-                .position(Position.CENTER_BOTTOM)
-                .anchor(Anchor.CENTER_BOTTOM)
-                .offsetX(0d)
-                .offsetY(5d)
+        column.tooltip().titleFormat("{%X}").position(Position.CENTER_BOTTOM)
+                .anchor(Anchor.CENTER_BOTTOM).offsetX(0d).offsetY(5d)
                 .format("${%Value}{groupsSeparator: }");
-
-
     }
 
     @Override
@@ -110,14 +108,17 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
         binding = null;
     }
 
+    /**
+     * On click listener for the button.
+     * @param v the View
+     */
     @Override
     public void onClick(View v) {
-        switch(v.getId())
-        {
+        switch(v.getId()) {
             case R.id.btnGenerate:
                 // Query Firestore for data
                 final String email = mAuth.getCurrentUser().getEmail();
-
+                // Format the date
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
                 Date date = null;
                 Date fromDate = null;
@@ -137,7 +138,7 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
                     toDate = c2.getTime();
                 }
 
-                // TODO: Figure out how to query for a specific day
+                // Use email to get the daily expense on a specific date
                 db.collection("expenses").whereEqualTo("email", email)
                         .whereGreaterThanOrEqualTo("timestamp", fromDate)
                         .whereLessThanOrEqualTo("timestamp", toDate).get()

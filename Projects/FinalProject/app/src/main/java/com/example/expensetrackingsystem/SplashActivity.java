@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.os.Looper;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * The class to take care of the splash screen in the beginning.
+ */
 public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle saveInstanceState) {

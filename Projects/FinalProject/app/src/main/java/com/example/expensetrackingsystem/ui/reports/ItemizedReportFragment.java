@@ -7,14 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
-import android.widget.TextView;
-import android.widget.Toast;
-
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
@@ -28,9 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import org.jetbrains.annotations.NotNull;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,10 +32,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemizedReportFragment extends Fragment implements View.OnClickListener {
+/**
+ * Fragment to display the itemized chart on a specific range of days.
+ */
+public class ItemizedReportFragment extends Fragment {
 
     private FragmentItemizedReportBinding binding;
-
     private EditText m_txtDateFrom;
     private EditText m_txtDateTo;
     private Button m_btnGo;
@@ -55,32 +49,17 @@ public class ItemizedReportFragment extends Fragment implements View.OnClickList
     private AnyChartView m_anyChartView;
     private List<DataEntry> m_data = new ArrayList<>();
 
-    private static final String TAG = "Ly: "; // ItemizedReportFragment.class.getSimpleName();
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentItemizedReportBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-
+        // retrieve the widgets
         m_txtDateFrom = root.findViewById(R.id.txtDateFrom);
         m_txtDateTo = root.findViewById(R.id.txtDateTo);
         m_btnGo = root.findViewById(R.id.btnItemizedReport);
         m_anyChartView = root.findViewById(R.id.itemizedReportChart);
-
-//        m_txtDateFrom = root.findViewById(R.id.txtDateFrom);
-//        m_txtDateTo = root.findViewById(R.id.txtDateTo);
-        m_btnGo = root.findViewById(R.id.btnItemizedReport);
-        m_btnGo.setOnClickListener(this);
-
-        // Init the pie chart
-//        AnyChartView anyChartView = root.findViewById(R.id.itemizedReportChart);
-//        Pie pie = AnyChart.pie();
-//        pie.title("Itemized Report");
-//        pie.labels().position("outside");
-//        pie.legend().title().enabled(true);
-//        pie.legend().title().text("legend title");
 
         // Populate chart
         Pie pie = AnyChart.pie();
@@ -90,11 +69,13 @@ public class ItemizedReportFragment extends Fragment implements View.OnClickList
         pie.legend().title().text("Legend");
         m_anyChartView.setChart(pie);
 
+        // set on click listener to the button
         m_btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "Generating itemized report");
+                // Get the email
                 final String email = mAuth.getCurrentUser().getEmail();
+                // Format the date
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
                 Date fromDate = null;
                 Date toDate = null;
@@ -103,6 +84,7 @@ public class ItemizedReportFragment extends Fragment implements View.OnClickList
                     toDate = df.parse(m_txtDateTo.getText().toString());
                 } catch (ParseException e) { }
 
+                // Using email to get the expenses
                 db.collection("expenses")
                         .whereEqualTo("email", email)
                         .whereGreaterThanOrEqualTo("timestamp", fromDate)
@@ -112,7 +94,6 @@ public class ItemizedReportFragment extends Fragment implements View.OnClickList
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                Log.i(TAG, "Retrieved the expenses successfully");
                                 Map<String, Double> map = new HashMap<>();
                                 m_data = new ArrayList<>();
                                 queryDocumentSnapshots.getDocuments()
@@ -122,16 +103,14 @@ public class ItemizedReportFragment extends Fragment implements View.OnClickList
                                             final Double amount = document.getDouble("amount");
                                             map.put(expenseType, map.getOrDefault(expenseType, 0D) + amount);
                                         });
-                                Log.i(TAG, "map = " + map);
                                 map.keySet().forEach(expenseType -> m_data.add(new ValueDataEntry(expenseType, map.get(expenseType))));
+                                // set the chart
                                 pie.data(m_data);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
-                            public void onFailure(@NonNull @NotNull Exception e) {
-                                Log.e(TAG, "Failed to fetch expenses", e);
-                            }
+                            public void onFailure(@NonNull @NotNull Exception e) {}
                         });
             }
         });
@@ -143,55 +122,5 @@ public class ItemizedReportFragment extends Fragment implements View.OnClickList
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        // Add listener for the Go button
-//        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-//        final String email = mAuth.getCurrentUser().getEmail();
-        Log.i(TAG, "Generating itemized report");
-        System.out.printf("Ly: hello");
-
-        switch (v.getId()) {
-            case R.id.btnItemizedReport:
-                Log.d(TAG, "Generating itemized report");
-//                System.out.println("Hello");
-//                Date fromDate = null;
-//                Date toDate = null;
-//                try {
-//                    fromDate = df.parse(m_txtDateFrom.getText().toString());
-//                    toDate = df.parse(m_txtDateTo.getText().toString());
-//                } catch (ParseException e) { }
-//                db.collection("expenses")
-//                        .whereEqualTo("email", email)
-//                        .whereGreaterThanOrEqualTo("timestamp", fromDate)
-//                        .whereLessThanOrEqualTo("timestamp", toDate)
-//                        .orderBy("timestamp", Query.Direction.ASCENDING)
-//                        .get()
-//                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                            @Override
-//                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                                Log.i(TAG, "Retrieved the expenses successfully");
-//                                List<DataEntry> data = queryDocumentSnapshots.getDocuments()
-//                                        .stream()
-//                                        .map(document -> new ValueDataEntry(document.getTimestamp("timestamp").toDate().toString(), document.getDouble("amount")))
-//                                        .collect(Collectors.toList());
-//
-//                                // Populate chart
-//                                pie.data(data);
-//                                anyChartView.setChart(pie);
-//                            }
-//                        })
-//                        .addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull @NotNull Exception e) {
-//                                Log.w(TAG, "Failed to fetch expenses");
-//                            }
-//                        });
-//            }
-            default:
-        }
     }
 }

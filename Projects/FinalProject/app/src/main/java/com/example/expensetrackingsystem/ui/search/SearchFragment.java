@@ -6,24 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.example.expensetrackingsystem.R;
 import com.example.expensetrackingsystem.databinding.FragmentSearchBinding;
 
+/**
+ * Fragment that display the search option.
+ */
 public class SearchFragment extends Fragment implements View.OnClickListener {
 
-    private SearchViewModel searchViewModelViewModel;
     private FragmentSearchBinding binding;
     private TextView txtBack;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        searchViewModelViewModel =
-                new ViewModelProvider(this).get(SearchViewModel.class);
 
         binding = FragmentSearchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -41,6 +38,10 @@ public class SearchFragment extends Fragment implements View.OnClickListener {
         binding = null;
     }
 
+    /**
+     * On click method for the button.
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId())

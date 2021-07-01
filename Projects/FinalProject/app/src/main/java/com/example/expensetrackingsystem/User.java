@@ -2,8 +2,10 @@ package com.example.expensetrackingsystem;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Accessors;
 
+/**
+ * A class that represents the user object.
+ */
 @Builder
 @Data
 public class User {

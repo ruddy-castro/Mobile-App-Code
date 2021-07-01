@@ -1,12 +1,14 @@
 package com.example.expensetrackingsystem.model;
 
 import com.google.firebase.Timestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * A class that represents the expense object.
+ */
 @Builder
 @Data
 @NoArgsConstructor

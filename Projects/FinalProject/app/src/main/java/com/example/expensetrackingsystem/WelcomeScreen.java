@@ -1,41 +1,30 @@
 package com.example.expensetrackingsystem;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
-
-import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.expensetrackingsystem.databinding.ActivityWelcomeScreenBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * The welcome screen when user successfully logged in.
+ */
 public class WelcomeScreen extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityWelcomeScreenBinding binding;
-
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private TextView navUsername;
-
-    private final String TAG = "Ly: "; // WelcomeScreen.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,12 +51,6 @@ public class WelcomeScreen extends AppCompatActivity {
                 R.id.nav_daily_expenses, R.id.nav_itemized_report, R.id.nav_daily_savings)
                 .setDrawerLayout(drawer)
                 .build();
-
-        // TODO: Fix this. Won't find text view id
-        // Displaying username in drawer menu
-//        String username = getIntent().getStringExtra("username");
-//        navUsername = findViewById(R.id.drwTitle);
-//        navUsername.setText(username);
 
         // Controller that controls the navigation between frags
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_welcome_screen);
@@ -104,6 +87,11 @@ public class WelcomeScreen extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+    /**
+     * when user click something on the welcome screen.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

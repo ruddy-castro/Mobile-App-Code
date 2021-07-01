@@ -15,10 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,7 +26,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -47,12 +44,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     // AwesomeValidation for login check
     private AwesomeValidation awesomeValidation;
 
-
-    private static final String TAG = Login.class.getSimpleName();
-
     /**
      * Hook method called when the activity is spawned
-     *
      * @param savedInstanceState the saved instance state
      */
     @Override
@@ -77,6 +70,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         awesomeValidation.addValidation(this, R.id.txtPassword, "^(?!\\s*$).+", R.string.password_required_err_msg);
     }
 
+    /**
+     * Verifies the user when they login.
+     */
     private void userLogin() {
         String email = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
@@ -88,7 +84,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     onSignedIn(email);
                 } else {
                     // Add toast message
-                    Log.i(TAG, "Failed to login!");
                     Toast.makeText(getApplicationContext(), "Failed to Login!",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -97,6 +92,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
     }
 
+    /**
+     * The activity visible to the user.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -107,13 +105,15 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * Check if the user signed in, if yes, they got sent to the welcome page.
+     * @param email
+     */
     private void onSignedIn(String email) {
-        Log.i(TAG, String.format("Signing in with email '%s'", email));
         Intent welcomeIntent = new Intent(getApplicationContext(), WelcomeScreen.class);
 
         // Query to db to find the username of the user logging in
-        db.collection("users")
-                .document(email).get()
+        db.collection("users").document(email).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
@@ -121,19 +121,18 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                             final DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
                                 final String username = document.getString("username");
-                                Log.d(TAG, "Username found: " + username);
                                 welcomeIntent.putExtra("username", username);
                                 startActivity(welcomeIntent);
-                            } else {
-                                Log.d(TAG, "Document does not exist");
                             }
-                        } else {
-                            Log.d(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
     }
 
+    /**
+     * Set on click for all buttons.
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -151,13 +150,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 } else {
                     System.out.println("Validation successful");
                 }
-
                 userLogin();
 
                 // Add toast message:
                 Toast.makeText(getApplicationContext(), "Trying to login",
                         Toast.LENGTH_SHORT).show();
-
                 break;
         }
     }
