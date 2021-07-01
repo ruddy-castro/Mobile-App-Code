@@ -34,11 +34,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DailySavingsFragment extends Fragment implements View.OnClickListener{
+public class DailySavingsFragment extends Fragment {
 
     private FragmentDailySavingsBinding binding;
 
-    private Button mBack;
     private AnyChartView mSavingChart;
     private RecyclerView rvSaving;
 
@@ -60,7 +59,6 @@ public class DailySavingsFragment extends Fragment implements View.OnClickListen
         View root = binding.getRoot();
 
         // Retrieve the widgets
-        mBack = (Button) root.findViewById(R.id.btnDsBack);
         rvSaving = root.findViewById(R.id.savingList);
         rvSaving.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -112,10 +110,5 @@ public class DailySavingsFragment extends Fragment implements View.OnClickListen
         pie.data(tempData);
 
         chart.setChart(pie);
-    }
-
-    @Override
-    public void onClick(View v){
-        // TODO: Add specific code for each listener
     }
 }

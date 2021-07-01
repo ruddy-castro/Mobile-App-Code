@@ -35,12 +35,11 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import java.util.stream.Collectors;
 
-public class DailyExpensesFragment extends Fragment implements View.OnClickListener {
+public class DailyExpensesFragment extends Fragment {
 
     private FragmentDailyExpensesBinding binding;
     private List<DataEntry> data;
 
-    private Button mBack;
     private Button mNew;
     private AnyChartView mExpenseChart;
     private RecyclerView rvExpense;
@@ -58,7 +57,6 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
         mAuth = FirebaseAuth.getInstance();
 
         // Retrieve the widgets
-        mBack = root.findViewById(R.id.btnDeBack);
         mNew = root.findViewById(R.id.btnDeNew);
         rvExpense = root.findViewById(R.id.expensesList);
         rvExpense.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -132,12 +130,6 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void onClick(View v){
-        // TODO: Add specific code for each listener
-
     }
 }
 
