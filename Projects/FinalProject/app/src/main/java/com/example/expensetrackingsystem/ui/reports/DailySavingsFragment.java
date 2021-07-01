@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +33,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,11 +47,11 @@ public class DailySavingsFragment extends Fragment {
     private FragmentDailySavingsBinding binding;
 
     private AnyChartView mSavingChart;
+    private EditText mDate;
+    private Button mGenerate;
     private RecyclerView rvSaving;
 
     //Saving goal:
-    //TODO retrieve real saving goal:
-    private double mSavingGoal = 5000;
     private double mTotalSpent = 0;
     private double mDailySaving = 0;
 
@@ -60,37 +66,47 @@ public class DailySavingsFragment extends Fragment {
         View root = binding.getRoot();
 
         // Retrieve the widgets
+        mDate = root.findViewById(R.id.editTextDate);
         rvSaving = root.findViewById(R.id.savingList);
+        mGenerate = root.findViewById(R.id.dsButton);
         rvSaving.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Setup charts
         mSavingChart = root.findViewById(R.id.dailySavingChart);
 
-        // Get the email
-        final String email = mAuth.getCurrentUser().getEmail();
+        // Set on click listener for the generate button
+        mGenerate.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // Query Firestore for data: get email
+                final String email = mAuth.getCurrentUser().getEmail();
 
-        // Use email to get the dailySaving amount
-        db.collection("settings").document(email).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                // Format the date
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                Date date = null;
+                // try and catch the date to match the format
+                try{
+                    date = df.parse(mDate.getText().toString());
+                } catch (ParseException e) { }
+
+                // Use email to get the dailySaving amount
+                db.collection("settings").document(email).get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Log.i("Ivy: ", "Got settings document successfully");
-
                         // Get the Annual Income
                         double annualIncome = documentSnapshot.getDouble("annualIncome");
                         mDailySaving = annualIncome / 365;
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull @NotNull Exception e) {
-                        Log.i("Ivy: ", "Failed to get settings document");
-                    }
+                    public void onFailure(@NonNull @NotNull Exception e) { }
                 });
-        
-        // Use email to get the amount spend on a date
-        db.collection("expenses").whereEqualTo("email", email).get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+
+                // Use email to get the amount spend on a date
+                db.collection("expenses").whereEqualTo("email", email)
+                        .whereEqualTo("timestamp", date).get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         List<Expense> expenses = queryDocumentSnapshots.getDocuments()
@@ -111,11 +127,12 @@ public class DailySavingsFragment extends Fragment {
                         // create the chart
                         populateChart(mSavingChart);
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull @NotNull Exception e) {}
+                    public void onFailure(@NonNull @NotNull Exception e) { }
                 });
+            }
+        });
         return root;
     }
 
