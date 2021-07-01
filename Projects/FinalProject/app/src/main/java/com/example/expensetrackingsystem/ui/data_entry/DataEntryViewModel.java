@@ -38,45 +38,45 @@ public class DataEntryViewModel extends ViewModel {
 
         expenses = new MutableLiveData<>();
 
-        getExpensesData();
+        //getExpensesData();
     }
 
-    public LiveData<List<ExpenseItem>> getExpensesData() {
-        db.collection("expenses").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task)
-            {
-                if (task.isSuccessful())
-                {
-                    ArrayList<ExpenseItem> items = new ArrayList<>();
-
-                    for (QueryDocumentSnapshot document : task.getResult())
-                    {
-                        if (document.getString("email").equals(user.getCurrentUser().getEmail()))
-                        {
-                            Log.d("Data Entry VM", document.getId() + " => " + document.getData());
-                            ExpenseItem e = ExpenseItem.builder().build();
-                            e.setAmount(Float.parseFloat(document.getString("amount")));
-                            e.setEmail(document.getString("email"));
-                            e.setExpenseTypeId(document.getString("expenseTypeId"));
-                            e.setTimestamp((Timestamp) document.get("timestamp"));
-
-                            items.add(e);
-                        }
-                    }
-
-                    expenses.setValue(items);
-                }
-
-                else
-                    {
-                        Log.d("Data Entry VM", "Error getting documents: ", task.getException());
-                    }
-            }
-        });
-
-        return expenses;
-    }
+//    public LiveData<List<ExpenseItem>> getExpensesData() {
+//        db.collection("expenses").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task)
+//            {
+//                if (task.isSuccessful())
+//                {
+//                    ArrayList<ExpenseItem> items = new ArrayList<>();
+//
+//                    for (QueryDocumentSnapshot document : task.getResult())
+//                    {
+//                        if (document.getString("email").equals(user.getCurrentUser().getEmail()))
+//                        {
+//                            Log.d("Data Entry VM", document.getId() + " => " + document.getData());
+//                            ExpenseItem e = ExpenseItem.builder().build();
+//                            e.setAmount(Float.parseFloat(document.getString("amount")));
+//                            e.setEmail(document.getString("email"));
+//                            e.setExpenseTypeId(document.getString("expenseTypeId"));
+//                            e.setTimestamp((Timestamp) document.get("timestamp"));
+//
+//                            items.add(e);
+//                        }
+//                    }
+//
+//                    expenses.setValue(items);
+//                }
+//
+//                else
+//                    {
+//                        Log.d("Data Entry VM", "Error getting documents: ", task.getException());
+//                    }
+//            }
+//        });
+//
+//        return expenses;
+//    }
 
     public LiveData<String> getText() {
         return mText;

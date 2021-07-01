@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +44,9 @@ public class DataEntryRecyclerViewAdapter extends RecyclerView.Adapter <DataEntr
             @Override
             public void onClick(View v) {
                 // TODO: Set up listener for selecting an item
+                Toast.makeText(holder.itemView.getContext(),
+                        "Adding a new item with same information as " + mValues.get(position).getExpenseType() + ".",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }

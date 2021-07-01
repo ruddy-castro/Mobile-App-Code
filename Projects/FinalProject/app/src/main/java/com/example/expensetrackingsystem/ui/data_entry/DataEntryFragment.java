@@ -94,7 +94,6 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
                     }
                 });
 
-
         return root;
     }
 
