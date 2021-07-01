@@ -36,8 +36,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Login extends AppCompatActivity implements View.OnClickListener {
 
-    // Firebase Authentication
+    // Firestore
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     // GUI elements
     private Button btnSignup, btnLogin;
@@ -46,7 +47,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     // AwesomeValidation for login check
     private AwesomeValidation awesomeValidation;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private static final String TAG = Login.class.getSimpleName();
 

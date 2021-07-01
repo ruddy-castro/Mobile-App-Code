@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Expense {
-    private double amount;
+    private Double amount;
     private Timestamp timestamp;
     private String expenseType;
     private String email;
