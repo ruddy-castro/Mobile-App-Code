@@ -120,20 +120,22 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
 
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
                 Date date = null;
-                Calendar c = Calendar.getInstance();
-                Calendar c2 = Calendar.getInstance();
+                Date fromDate = null;
+                Date toDate = null;
                 try {
-                    //date = df.parse(mDate.getText().toString());
-                    // Hardcoding for now
                     date = df.parse(mDate.getText().toString());
-                    c.setTime(date);
-                    c2.setTime(date);
                 } catch (ParseException e) { }
 
-                c.add(Calendar.DAY_OF_MONTH, -1);
-                c2.add(Calendar.DAY_OF_MONTH, 1);
-                Date fromDate = c.getTime();
-                Date toDate = c2.getTime();
+                if (date != null) {
+                    Calendar c = Calendar.getInstance();
+                    Calendar c2 = Calendar.getInstance();
+                    c.setTime(date);
+                    c2.setTime(date);
+                    c.add(Calendar.DAY_OF_MONTH, -1);
+                    c2.add(Calendar.DAY_OF_MONTH, 1);
+                    fromDate = c.getTime();
+                    toDate = c2.getTime();
+                }
 
                 // TODO: Figure out how to query for a specific day
                 db.collection("expenses").whereEqualTo("email", email)
