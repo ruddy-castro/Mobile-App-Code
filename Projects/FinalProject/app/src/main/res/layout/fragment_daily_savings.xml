@@ -70,7 +70,7 @@
         app:layout_constraintVertical_bias="0.5" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/expensesList"
+        android:id="@+id/savingList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"

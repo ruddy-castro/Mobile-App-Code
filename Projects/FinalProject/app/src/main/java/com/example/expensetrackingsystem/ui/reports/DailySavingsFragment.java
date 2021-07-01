@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anychart.AnyChartView;
+import com.example.expensetrackingsystem.R;
 import com.example.expensetrackingsystem.databinding.FragmentDailySavingsBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,7 +42,9 @@ public class DailySavingsFragment extends Fragment {
         View root = binding.getRoot();
 
         // Retrieve the widgets
-        mBack = root.findViewById(R.id.btnDsBack);
+        mBack = (Button) root.findViewById(R.id.btnDsBack);
+        rvSaving = root.findViewById(R.id.expensesList);
+
 
         /*
         final TextView textView = binding.textDailySavings;
