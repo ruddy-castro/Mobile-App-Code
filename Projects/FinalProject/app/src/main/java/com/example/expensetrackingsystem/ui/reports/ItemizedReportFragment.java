@@ -7,13 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
@@ -22,7 +18,6 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.example.expensetrackingsystem.R;
 import com.example.expensetrackingsystem.databinding.FragmentItemizedReportBinding;
-import com.example.expensetrackingsystem.model.Expense;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,21 +30,26 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
-public class ItemizedReportFragment extends Fragment implements View.OnClickListener {
+public class ItemizedReportFragment extends Fragment {
 
     private FragmentItemizedReportBinding binding;
 
-//    private EditText m_txtDateFrom;
-//    private EditText m_txtDateTo;
+    private EditText m_txtDateFrom;
+    private EditText m_txtDateTo;
     private Button m_btnGo;
 
     // Firestore
-//    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-//    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private AnyChartView m_anyChartView;
+    private List<DataEntry> m_data = new ArrayList<>();
 
     private static final String TAG = "Ly: "; // ItemizedReportFragment.class.getSimpleName();
 
@@ -59,29 +59,65 @@ public class ItemizedReportFragment extends Fragment implements View.OnClickList
         binding = FragmentItemizedReportBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-//        m_txtDateFrom = root.findViewById(R.id.txtDateFrom);
-//        m_txtDateTo = root.findViewById(R.id.txtDateTo);
-        m_btnGo = (Button) root.findViewById(R.id.btnItemizedReport);
-        m_btnGo.setOnClickListener(this);
+        m_txtDateFrom = root.findViewById(R.id.txtDateFrom);
+        m_txtDateTo = root.findViewById(R.id.txtDateTo);
+        m_btnGo = root.findViewById(R.id.btnItemizedReport);
+        m_anyChartView = root.findViewById(R.id.itemizedReportChart);
 
-        // Init the pie chart
-//        AnyChartView anyChartView = root.findViewById(R.id.itemizedReportChart);
-//        Pie pie = AnyChart.pie();
-//        pie.title("Itemized Report");
-//        pie.labels().position("outside");
-//        pie.legend().title().enabled(true);
-//        pie.legend().title().text("legend title");
+        // Populate chart
+        Pie pie = AnyChart.pie();
+        pie.title("Itemized Report");
+        pie.labels().position("outside");
+        pie.legend().title().enabled(true);
+        pie.legend().title().text("Legend");
+        m_anyChartView.setChart(pie);
 
-
-        /*
-        final TextView textView = binding.textItemizedReport;
-        itemizedReportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        m_btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onClick(View v) {
+                Log.i(TAG, "Generating itemized report");
+                final String email = mAuth.getCurrentUser().getEmail();
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                Date fromDate = null;
+                Date toDate = null;
+                try {
+                    fromDate = df.parse(m_txtDateFrom.getText().toString());
+                    toDate = df.parse(m_txtDateTo.getText().toString());
+                } catch (ParseException e) { }
+
+                db.collection("expenses")
+                        .whereEqualTo("email", email)
+                        .whereGreaterThanOrEqualTo("timestamp", fromDate)
+                        .whereLessThanOrEqualTo("timestamp", toDate)
+                        .orderBy("timestamp", Query.Direction.ASCENDING)
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                Log.i(TAG, "Retrieved the expenses successfully");
+                                Map<String, Double> map = new HashMap<>();
+                                m_data = new ArrayList<>();
+                                queryDocumentSnapshots.getDocuments()
+                                        .stream()
+                                        .forEach(document -> {
+                                            final String expenseType = document.getString("expenseType");
+                                            final Double amount = document.getDouble("amount");
+                                            map.put(expenseType, map.getOrDefault(expenseType, 0D) + amount);
+                                        });
+                                Log.i(TAG, "map = " + map);
+                                map.keySet().forEach(expenseType -> m_data.add(new ValueDataEntry(expenseType, map.get(expenseType))));
+                                pie.data(m_data);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull @NotNull Exception e) {
+                                Log.e(TAG, "Failed to fetch expenses", e);
+                            }
+                        });
             }
         });
-        */
+
         return root;
     }
 
@@ -91,52 +127,4 @@ public class ItemizedReportFragment extends Fragment implements View.OnClickList
         binding = null;
     }
 
-    @Override
-    public void onClick(View v) {
-        // Add listener for the Go button
-//        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-//        final String email = mAuth.getCurrentUser().getEmail();
-        Log.i(TAG, "Generating itemized report");
-        System.out.printf("Ly: hello");
-
-        switch (v.getId()) {
-            case R.id.btnItemizedReport:
-                Log.i(TAG, "Generating itemized report");
-//                System.out.println("Hello");
-//                Date fromDate = null;
-//                Date toDate = null;
-//                try {
-//                    fromDate = df.parse(m_txtDateFrom.getText().toString());
-//                    toDate = df.parse(m_txtDateTo.getText().toString());
-//                } catch (ParseException e) { }
-//                db.collection("expenses")
-//                        .whereEqualTo("email", email)
-//                        .whereGreaterThanOrEqualTo("timestamp", fromDate)
-//                        .whereLessThanOrEqualTo("timestamp", toDate)
-//                        .orderBy("timestamp", Query.Direction.ASCENDING)
-//                        .get()
-//                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                            @Override
-//                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                                Log.i(TAG, "Retrieved the expenses successfully");
-//                                List<DataEntry> data = queryDocumentSnapshots.getDocuments()
-//                                        .stream()
-//                                        .map(document -> new ValueDataEntry(document.getTimestamp("timestamp").toDate().toString(), document.getDouble("amount")))
-//                                        .collect(Collectors.toList());
-//
-//                                // Populate chart
-//                                pie.data(data);
-//                                anyChartView.setChart(pie);
-//                            }
-//                        })
-//                        .addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull @NotNull Exception e) {
-//                                Log.w(TAG, "Failed to fetch expenses");
-//                            }
-//                        });
-//            }
-            default:
-        }
-    }
 }

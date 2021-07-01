@@ -68,12 +68,16 @@
     <string name="data_entry">Data Entry</string>
     <string name="daily_expenses">Daily Expenses</string>
     <string name="daily_savings">Daily Savings</string>
-    <string name="itemized_report">Itemized Report</string>
-    <string name="txtDateFrom">From</string>
-    <string name="txtDateTo">To</string>
     <string name="btnNew">New</string>
     <string name="btnBack">Back</string>
     <string name="expense">Expenses</string>
     <string name="savings">Savings</string>
     <string name="itemName">The Item</string>
+
+    <!-- Itemized Report -->
+    <string name="itemized_report">Itemized Report</string>
+    <string name="txtDateFrom">From</string>
+    <string name="txtDateTo">To</string>
+    <string name="txtDefaultFrom">06/01/2021</string>
+    <string name="txtDefaultTo">07/01/2021</string>
 </resources>

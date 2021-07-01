@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 
 public class DailyExpensesFragment extends Fragment implements View.OnClickListener {
 
-    private DailyExpensesViewModel dailyExpensesViewModel;
     private FragmentDailyExpensesBinding binding;
     private List<DataEntry> data;
 
@@ -52,8 +51,6 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        /*dailyExpensesViewModel =
-                new ViewModelProvider(this).get(DailyExpensesViewModel.class);*/
 
         binding = FragmentDailyExpensesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
