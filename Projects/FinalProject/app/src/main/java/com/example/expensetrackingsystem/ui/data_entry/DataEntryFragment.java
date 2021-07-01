@@ -36,8 +36,8 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
     private DataEntryViewModel dataEntryViewModel;
     private FragmentDataEntryBinding binding;
-    //    private ImageButton newExpense;
-//    private TextView txtBack;
+    //  private ImageButton newExpense;
+    //  private Button txtBack;
     private RecyclerView rv;
 
     // Firestore

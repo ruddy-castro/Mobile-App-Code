@@ -56,16 +56,17 @@ public class DailySavingsViewModel extends ViewModel {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         if (document.getString("email").equals(user.getCurrentUser().getEmail())) {
                             Log.d("Data Entry VM", document.getId() + " => " + document.getData());
+                            // Get the expense item from database
                             ExpenseItem e = ExpenseItem.builder().build();
                             e.setAmount(Float.parseFloat(document.getString("amount")));
                             e.setEmail(document.getString("email"));
                             e.setExpenseTypeId(document.getString("expenseTypeId"));
                             e.setTimestamp((Timestamp) document.get("timestamp"));
-
+                            // Add item to the list
                             items.add(e);
                         }
                     }
-
+                    // Set the current expense item to this item
                     expenses.setValue(items);
                 } else {
                     Log.d("Data Entry VM", "Error getting documents: ", task.getException());
