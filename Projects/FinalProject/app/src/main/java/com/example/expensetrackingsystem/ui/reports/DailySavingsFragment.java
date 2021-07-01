@@ -36,6 +36,7 @@ public class DailySavingsFragment extends Fragment {
             }
         });
         */
+
         return root;
     }
 
