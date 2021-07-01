@@ -67,7 +67,7 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
         rvExpense.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Setup charts
-        AnyChartView anyChartView = root.findViewById(R.id.dailyExpensesChart);
+        mExpenseChart = root.findViewById(R.id.dailyExpensesChart);
         Cartesian cartesian = AnyChart.column();
         data = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
                         for (int i = 0; i < expenses.size(); i++)
                             data.add(new ValueDataEntry(expenses.get(i).getTimestamp().toDate().toString(), expenses.get(i).getAmount()));
 
-                        populateChart(cartesian, anyChartView);
+                        populateChart(cartesian, mExpenseChart);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

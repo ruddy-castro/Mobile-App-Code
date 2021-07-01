@@ -16,7 +16,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.charts.Cartesian;
+import com.anychart.charts.Pie;
 import com.example.expensetrackingsystem.R;
 import com.example.expensetrackingsystem.databinding.FragmentDailySavingsBinding;
 import com.example.expensetrackingsystem.model.Expense;
@@ -29,6 +34,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +46,11 @@ public class DailySavingsFragment extends Fragment implements View.OnClickListen
     private Button mBack;
     private AnyChartView mSavingChart;
     private RecyclerView rvSaving;
+
+    //Saving goal:
+    //TODO retrieve real saving goal:
+    private float mSavingGoal = 5000;
+    private float mTotalSpent = 0;
 
     // Firestore
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -58,6 +69,9 @@ public class DailySavingsFragment extends Fragment implements View.OnClickListen
         rvSaving = root.findViewById(R.id.savingList);
         rvSaving.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Setup charts
+        mSavingChart = root.findViewById(R.id.dailySavingChart);
+
         final String email = mAuth.getCurrentUser().getEmail();
         db.collection("expenses").whereEqualTo("email", email).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -73,13 +87,18 @@ public class DailySavingsFragment extends Fragment implements View.OnClickListen
                                         .build())
                                 .collect(Collectors.toList());
                         rvSaving.setAdapter(new DataEntryRecyclerViewAdapter(expenses));
+
+                        // calculate the total spent
+                        for (int i = 0; i < expenses.size(); i++) {
+                            mTotalSpent += expenses.get(i).getAmount();
+                        }
+                        populateChart(mSavingChart);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull @NotNull Exception e) {}
                 });
-
         return root;
     }
 
@@ -87,6 +106,17 @@ public class DailySavingsFragment extends Fragment implements View.OnClickListen
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void populateChart(AnyChartView chart) {
+        Pie pie = AnyChart.pie();
+        List<DataEntry> tempData = new ArrayList<>();
+
+        tempData.add(new ValueDataEntry("total spent", mTotalSpent));
+        tempData.add(new ValueDataEntry("left", mSavingGoal-mTotalSpent));
+        pie.data(tempData);
+
+        chart.setChart(pie);
     }
 
     @Override
