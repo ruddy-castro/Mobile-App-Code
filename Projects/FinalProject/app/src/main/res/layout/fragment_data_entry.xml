@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="New Expense"
+            android:text="Data Entry"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -47,13 +47,15 @@
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDataEntry"
         android:layout_width="409dp"
         android:layout_height="667dp"
         android:layout_marginTop="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        tools:listitem="@layout/report_list_item"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

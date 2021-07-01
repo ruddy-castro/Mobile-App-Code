@@ -10,13 +10,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expensetrackingsystem.R;
 import com.example.expensetrackingsystem.databinding.FragmentDataEntryBinding;
+import com.example.expensetrackingsystem.model.ExpenseItem;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.List;
 
 public class DataEntryFragment extends Fragment implements View.OnClickListener {
 
@@ -24,6 +30,9 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
     private FragmentDataEntryBinding binding;
     private ImageButton newExpense;
     private TextView txtBack;
+    private RecyclerView rv;
+    private FirebaseFirestore db;
+    private FirebaseAuth user;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -32,12 +41,26 @@ public class DataEntryFragment extends Fragment implements View.OnClickListener 
 
         binding = FragmentDataEntryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance();
 
         // Wire clickers from xml and set up their listeners
         newExpense = (ImageButton) root.findViewById(R.id.ibNew);
         txtBack = (TextView) root.findViewById(R.id.txtBackDE);
         newExpense.setOnClickListener(this);
         txtBack.setOnClickListener(this);
+
+        rv = root.findViewById(R.id.rvDataEntry);
+        rv.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        dataEntryViewModel.getExpensesData().observe(getViewLifecycleOwner(), new Observer<List<ExpenseItem>>() {
+            @Override
+            public void onChanged(List<ExpenseItem> expenseItems) {
+                rv.setAdapter(new DataEntryRecyclerViewAdapter(expenseItems));
+            }
+        });
+
+
 
         return root;
     }

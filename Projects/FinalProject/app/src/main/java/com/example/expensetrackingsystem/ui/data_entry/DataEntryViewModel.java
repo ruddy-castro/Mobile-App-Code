@@ -41,7 +41,7 @@ public class DataEntryViewModel extends ViewModel {
         getExpensesData();
     }
 
-    private void getExpensesData() {
+    public LiveData<List<ExpenseItem>> getExpensesData() {
         db.collection("expenses").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task)
@@ -74,11 +74,11 @@ public class DataEntryViewModel extends ViewModel {
                     }
             }
         });
+
+        return expenses;
     }
 
     public LiveData<String> getText() {
         return mText;
     }
-
-
 }
