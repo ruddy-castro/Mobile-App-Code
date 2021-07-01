@@ -39,17 +39,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ItemizedReportFragment extends Fragment {
+public class ItemizedReportFragment extends Fragment implements View.OnClickListener {
 
     private FragmentItemizedReportBinding binding;
 
-    private EditText m_txtDateFrom;
-    private EditText m_txtDateTo;
+//    private EditText m_txtDateFrom;
+//    private EditText m_txtDateTo;
     private Button m_btnGo;
 
     // Firestore
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+//    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+//    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private static final String TAG = "Ly: "; // ItemizedReportFragment.class.getSimpleName();
 
@@ -59,10 +59,10 @@ public class ItemizedReportFragment extends Fragment {
         binding = FragmentItemizedReportBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        m_txtDateFrom = root.findViewById(R.id.txtDateFrom);
-        m_txtDateTo = root.findViewById(R.id.txtDateTo);
-        m_btnGo = root.findViewById(R.id.btnItemizedReport);
-        System.out.printf("Ly: btn = %s\n", m_btnGo.getText().toString());
+//        m_txtDateFrom = root.findViewById(R.id.txtDateFrom);
+//        m_txtDateTo = root.findViewById(R.id.txtDateTo);
+        m_btnGo = (Button) root.findViewById(R.id.btnItemizedReport);
+        m_btnGo.setOnClickListener(this);
 
         // Init the pie chart
 //        AnyChartView anyChartView = root.findViewById(R.id.itemizedReportChart);
@@ -70,17 +70,39 @@ public class ItemizedReportFragment extends Fragment {
 //        pie.title("Itemized Report");
 //        pie.labels().position("outside");
 //        pie.legend().title().enabled(true);
-////        pie.legend().title().text("legend title");
-//
-//        // Add listener for the Go button
+//        pie.legend().title().text("legend title");
+
+
+        /*
+        final TextView textView = binding.textItemizedReport;
+        itemizedReportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                textView.setText(s);
+            }
+        });
+        */
+        return root;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        // Add listener for the Go button
 //        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 //        final String email = mAuth.getCurrentUser().getEmail();
-        Log.i(TAG, "Setting listener for go button");
-        m_btnGo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        Log.i(TAG, "Generating itemized report");
+        System.out.printf("Ly: hello");
+
+        switch (v.getId()) {
+            case R.id.btnItemizedReport:
                 Log.i(TAG, "Generating itemized report");
-                System.out.println("Hello");
+//                System.out.println("Hello");
 //                Date fromDate = null;
 //                Date toDate = null;
 //                try {
@@ -113,25 +135,8 @@ public class ItemizedReportFragment extends Fragment {
 //                                Log.w(TAG, "Failed to fetch expenses");
 //                            }
 //                        });
-            }
-        });
-
-
-        /*
-        final TextView textView = binding.textItemizedReport;
-        itemizedReportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-        */
-        return root;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+//            }
+            default:
+        }
     }
 }
