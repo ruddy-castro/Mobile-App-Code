@@ -42,7 +42,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import java.util.stream.Collectors;
 
-public class DailyExpensesFragment extends Fragment {
+public class DailyExpensesFragment extends Fragment implements View.OnClickListener {
 
     private FragmentDailyExpensesBinding binding;
     private List<DataEntry> data;
@@ -50,6 +50,8 @@ public class DailyExpensesFragment extends Fragment {
     private TextView mDate;
     private AnyChartView mExpenseChart;
     private RecyclerView rvExpense;
+    private Button mGenerate;
+    private Cartesian cartesian;
 
     // Firestore
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -64,71 +66,32 @@ public class DailyExpensesFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         // Retrieve the widgets
+        mGenerate = root.findViewById(R.id.btnGenerate);
         mDate = root.findViewById(R.id.editTextDate);
         rvExpense = root.findViewById(R.id.expensesList);
-        rvExpense.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Setup charts
         mExpenseChart = root.findViewById(R.id.dailyExpensesChart);
-        Cartesian cartesian = AnyChart.column();
         data = new ArrayList<>();
 
-        // Query Firestore for data
-        final String email = mAuth.getCurrentUser().getEmail();
+        mGenerate.setOnClickListener(this);
 
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-        Date date = null;
-        Calendar c = Calendar.getInstance();
-        Calendar c2 = Calendar.getInstance();
-        try {
-            //date = df.parse(mDate.getText().toString());
-            // Hardcoding for now
-            date = df.parse("05/27/2021");
-            c.setTime(date);
-            c2.setTime(date);
-        } catch (ParseException e) { }
+        cartesian= AnyChart.column();
+        cartesian.animation(true);
+        cartesian.title("Daily Expenses Per Item");
+        cartesian.yScale().minimum(0d);
+        cartesian.yAxis(0).labels().format("${%Value}{groupsSeparator: }");
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+        cartesian.interactivity().hoverMode(HoverMode.BY_X);
+        cartesian.xAxis(0).title("Product");
+        cartesian.yAxis(0).title("Expense");
 
-        c.add(Calendar.DATE, 1);
-        c.add(Calendar.DATE, -1);
-        Date fromDate = c2.getTime();
-        Date toDate = c.getTime();
-
-
-
-        // TODO: Figure out how to query for a specific day
-        db.collection("expenses").whereEqualTo("email", email)
-                .whereGreaterThanOrEqualTo("timestamp", fromDate)
-                .whereLessThanOrEqualTo("timestamp", toDate).get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        List<Expense> expenses = queryDocumentSnapshots.getDocuments()
-                                .stream()
-                                .map(document -> Expense.builder()
-                                        .email(email)
-                                        .amount(document.getDouble("amount"))
-                                        .expenseType(document.getString("expenseType"))
-                                        .timestamp(document.getTimestamp("timestamp"))
-                                        .build())
-                                .collect(Collectors.toList());
-                        rvExpense.setAdapter(new DataEntryRecyclerViewAdapter(expenses));
-
-                        // Adding data into chart data list
-                        for (int i = 0; i < expenses.size(); i++)
-                            data.add(new ValueDataEntry(expenses.get(i).getExpenseType().toString(), expenses.get(i).getAmount()));
-
-                        populateChart(cartesian, mExpenseChart);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull @NotNull Exception e) {}
-                });
+        mExpenseChart.setChart(cartesian);
 
         return root;
     }
 
-    private void populateChart(Cartesian cartesian, AnyChartView anyChartView) {
+    private void populateChart(Cartesian cartesian) {
         Column column = cartesian.column(data);
         column.tooltip()
                 .titleFormat("{%X}")
@@ -138,26 +101,76 @@ public class DailyExpensesFragment extends Fragment {
                 .offsetY(5d)
                 .format("${%Value}{groupsSeparator: }");
 
-        cartesian.animation(true);
-        cartesian.title("Daily Expenses Per Item");
 
-        cartesian.yScale().minimum(0d);
-
-        cartesian.yAxis(0).labels().format("${%Value}{groupsSeparator: }");
-
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-        cartesian.interactivity().hoverMode(HoverMode.BY_X);
-
-        cartesian.xAxis(0).title("Product");
-        cartesian.yAxis(0).title("Expense");
-
-        anyChartView.setChart(cartesian);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId())
+        {
+            case R.id.btnGenerate:
+                // Query Firestore for data
+                final String email = mAuth.getCurrentUser().getEmail();
+
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                Date date = null;
+                Calendar c = Calendar.getInstance();
+                Calendar c2 = Calendar.getInstance();
+                try {
+                    //date = df.parse(mDate.getText().toString());
+                    // Hardcoding for now
+                    date = df.parse(mDate.getText().toString());
+                    c.setTime(date);
+                    c2.setTime(date);
+                } catch (ParseException e) { }
+
+                c.add(Calendar.DAY_OF_MONTH, -1);
+                c2.add(Calendar.DAY_OF_MONTH, 1);
+                Date fromDate = c.getTime();
+                Date toDate = c2.getTime();
+
+                // TODO: Figure out how to query for a specific day
+                db.collection("expenses").whereEqualTo("email", email)
+                        .whereGreaterThanOrEqualTo("timestamp", fromDate)
+                        .whereLessThanOrEqualTo("timestamp", toDate).get()
+                        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                List<Expense> expenses = queryDocumentSnapshots.getDocuments()
+                                        .stream()
+                                        .map(document -> Expense.builder()
+                                                .email(email)
+                                                .amount(document.getDouble("amount"))
+                                                .expenseType(document.getString("expenseType"))
+                                                .timestamp(document.getTimestamp("timestamp"))
+                                                .build())
+                                        .collect(Collectors.toList());
+                                rvExpense.setAdapter(new DataEntryRecyclerViewAdapter(expenses));
+
+                                if (data.size() > 0)
+                                    data.clear();
+
+                                // Adding data into chart data list
+                                for (int i = 0; i < expenses.size(); i++)
+                                    data.add(new ValueDataEntry(expenses.get(i).getExpenseType().toString(), expenses.get(i).getAmount()));
+
+                                //populateChart(cartesian);
+                                cartesian.removeAllSeries();
+                                cartesian.column(data);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull @NotNull Exception e) {}
+                        });
+        }
+
     }
 }
 
