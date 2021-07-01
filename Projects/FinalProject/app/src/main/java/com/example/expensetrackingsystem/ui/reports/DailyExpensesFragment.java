@@ -5,17 +5,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
+import com.anychart.core.cartesian.series.Column;
+import com.anychart.enums.Anchor;
+import com.anychart.enums.HoverMode;
+import com.anychart.enums.Position;
+import com.anychart.enums.TooltipPositionMode;
 import com.example.expensetrackingsystem.R;
 import com.example.expensetrackingsystem.databinding.FragmentDailyExpensesBinding;
 import com.example.expensetrackingsystem.model.Expense;
@@ -25,16 +27,19 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import org.jetbrains.annotations.NotNull;
-
+import com.anychart.AnyChart;
+import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.charts.Cartesian;
+import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 import java.util.stream.Collectors;
 
 public class DailyExpensesFragment extends Fragment implements View.OnClickListener {
 
     private DailyExpensesViewModel dailyExpensesViewModel;
     private FragmentDailyExpensesBinding binding;
+    private List<DataEntry> data;
 
     private Button mBack;
     private Button mNew;
@@ -52,6 +57,8 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
 
         binding = FragmentDailyExpensesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         // Retrieve the widgets
         mBack = root.findViewById(R.id.btnDeBack);
@@ -59,6 +66,12 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
         rvExpense = root.findViewById(R.id.expensesList);
         rvExpense.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Setup charts
+        AnyChartView anyChartView = root.findViewById(R.id.dailyExpensesChart);
+        Cartesian cartesian = AnyChart.column();
+        data = new ArrayList<>();
+
+        // Query Firestore for data
         final String email = mAuth.getCurrentUser().getEmail();
         db.collection("expenses").whereEqualTo("email", email).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -74,6 +87,12 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
                                         .build())
                                 .collect(Collectors.toList());
                         rvExpense.setAdapter(new DataEntryRecyclerViewAdapter(expenses));
+
+                        // Adding data into chart data list
+                        for (int i = 0; i < expenses.size(); i++)
+                            data.add(new ValueDataEntry(expenses.get(i).getTimestamp().toDate().toString(), expenses.get(i).getAmount()));
+
+                        populateChart(cartesian, anyChartView);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -81,7 +100,35 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
                     public void onFailure(@NonNull @NotNull Exception e) {}
                 });
 
+
+
         return root;
+    }
+
+    private void populateChart(Cartesian cartesian, AnyChartView anyChartView) {
+        Column column = cartesian.column(data);
+        column.tooltip()
+                .titleFormat("{%X}")
+                .position(Position.CENTER_BOTTOM)
+                .anchor(Anchor.CENTER_BOTTOM)
+                .offsetX(0d)
+                .offsetY(5d)
+                .format("${%Value}{groupsSeparator: }");
+
+        cartesian.animation(true);
+        cartesian.title("Daily Expenses Per Item");
+
+        cartesian.yScale().minimum(0d);
+
+        cartesian.yAxis(0).labels().format("${%Value}{groupsSeparator: }");
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+        cartesian.interactivity().hoverMode(HoverMode.BY_X);
+
+        cartesian.xAxis(0).title("Product");
+        cartesian.yAxis(0).title("Expense");
+
+        anyChartView.setChart(cartesian);
     }
 
     @Override
@@ -93,5 +140,8 @@ public class DailyExpensesFragment extends Fragment implements View.OnClickListe
     @Override
     public void onClick(View v){
         // TODO: Add specific code for each listener
+
     }
 }
+
+
