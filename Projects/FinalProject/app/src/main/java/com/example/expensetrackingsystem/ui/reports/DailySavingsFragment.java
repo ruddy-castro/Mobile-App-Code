@@ -52,8 +52,8 @@ public class DailySavingsFragment extends Fragment {
     private RecyclerView rvSaving;
 
     //Saving goal:
-    private double mTotalSpent = 0;
-    private double mDailySaving = 0;
+    private double mTotalSpent;
+    private double mDailySaving;
 
     // Firestore
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -73,6 +73,8 @@ public class DailySavingsFragment extends Fragment {
 
         // Setup charts
         mSavingChart = root.findViewById(R.id.dailySavingChart);
+        Pie pie = AnyChart.pie();
+        mSavingChart.setChart(pie);
 
         // Set on click listener for the generate button
         mGenerate.setOnClickListener(new View.OnClickListener(){
@@ -80,6 +82,10 @@ public class DailySavingsFragment extends Fragment {
             public void onClick(View v) {
                 // Query Firestore for data: get email
                 final String email = mAuth.getCurrentUser().getEmail();
+
+                // Reset data
+                mTotalSpent = 0;
+                mDailySaving = 0;
 
                 // Format the date
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -124,8 +130,11 @@ public class DailySavingsFragment extends Fragment {
                         for (int i = 0; i < expenses.size(); i++) {
                             mTotalSpent += expenses.get(i).getAmount();
                         }
-                        // create the chart
-                        populateChart(mSavingChart);
+
+                        List<DataEntry> tempData = new ArrayList<>();
+                        tempData.add(new ValueDataEntry("total spent", mTotalSpent));
+                        tempData.add(new ValueDataEntry("daily saving", mDailySaving-mTotalSpent));
+                        pie.data(tempData);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -140,16 +149,5 @@ public class DailySavingsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    private void populateChart(AnyChartView chart) {
-        Pie pie = AnyChart.pie();
-        List<DataEntry> tempData = new ArrayList<>();
-
-        tempData.add(new ValueDataEntry("total spent", mTotalSpent));
-        tempData.add(new ValueDataEntry("daily saving", mDailySaving));
-        pie.data(tempData);
-
-        chart.setChart(pie);
     }
 }
