@@ -57,7 +57,7 @@ public class ExpenseEntryActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         Map<String, Boolean> expenseTypes = (Map<String, Boolean>) documentSnapshot.get("expenseTypes");
-                        List<String> expenseTypesList = new ArrayList<>(expenseTypes.keySet());
+                        List<String> expenseTypesList = expenseTypes == null ? new ArrayList<>() : new ArrayList<>(expenseTypes.keySet());
                         Log.i(TAG, "expenseTypesList = " + expenseTypesList);
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(ExpenseEntryActivity.this, android.R.layout.simple_spinner_dropdown_item, expenseTypesList);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
