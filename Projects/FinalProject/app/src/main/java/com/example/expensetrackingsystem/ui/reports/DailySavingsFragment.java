@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,6 +26,7 @@ import com.example.expensetrackingsystem.ui.data_entry.DataEntryRecyclerViewAdap
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -43,8 +45,9 @@ public class DailySavingsFragment extends Fragment {
 
     //Saving goal:
     //TODO retrieve real saving goal:
-    private float mSavingGoal = 5000;
-    private float mTotalSpent = 0;
+    private double mSavingGoal = 5000;
+    private double mTotalSpent = 0;
+    private double mDailySaving = 0;
 
     // Firestore
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -52,8 +55,6 @@ public class DailySavingsFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        /*dailySavingsViewModel =
-                new ViewModelProvider(this).get(DailySavingsViewModel.class);*/
 
         binding = FragmentDailySavingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -65,7 +66,29 @@ public class DailySavingsFragment extends Fragment {
         // Setup charts
         mSavingChart = root.findViewById(R.id.dailySavingChart);
 
+        // Get the email
         final String email = mAuth.getCurrentUser().getEmail();
+
+        // Use email to get the dailySaving amount
+        db.collection("settings").document(email).get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Log.i("Ivy: ", "Got settings document successfully");
+
+                        // Get the Annual Income
+                        double annualIncome = documentSnapshot.getDouble("annualIncome");
+                        mDailySaving = annualIncome / 365;
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        Log.i("Ivy: ", "Failed to get settings document");
+                    }
+                });
+        
+        // Use email to get the amount spend on a date
         db.collection("expenses").whereEqualTo("email", email).get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -85,6 +108,7 @@ public class DailySavingsFragment extends Fragment {
                         for (int i = 0; i < expenses.size(); i++) {
                             mTotalSpent += expenses.get(i).getAmount();
                         }
+                        // create the chart
                         populateChart(mSavingChart);
                     }
                 })
@@ -106,7 +130,7 @@ public class DailySavingsFragment extends Fragment {
         List<DataEntry> tempData = new ArrayList<>();
 
         tempData.add(new ValueDataEntry("total spent", mTotalSpent));
-        tempData.add(new ValueDataEntry("left", mSavingGoal-mTotalSpent));
+        tempData.add(new ValueDataEntry("daily saving", mDailySaving));
         pie.data(tempData);
 
         chart.setChart(pie);
