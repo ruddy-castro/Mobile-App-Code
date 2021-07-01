@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_itemized_report"
         android:name="com.example.expensetrackingsystem.ui.reports.ItemizedReportFragment"
-        android:label="@string/itemized_list"
+        android:label="@string/itemized_report"
         tools:layout="@layout/fragment_itemized_report" />
     <fragment
         android:id="@+id/nav_daily_savings"
