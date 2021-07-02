@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.example.expensetrackingsystem.R;
 
 /**
+ * AboutUs is a Fragment that displays information about the application.
  * A simple {@link Fragment} subclass.
  * Use the {@link AboutUs#newInstance} factory method to
  * create an instance of this fragment.

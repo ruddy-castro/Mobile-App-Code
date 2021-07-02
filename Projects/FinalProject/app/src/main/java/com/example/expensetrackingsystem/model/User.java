@@ -1,4 +1,4 @@
-package com.example.expensetrackingsystem;
+package com.example.expensetrackingsystem.model;
 
 import lombok.Builder;
 import lombok.Data;
