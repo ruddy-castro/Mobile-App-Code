@@ -1,7 +1,6 @@
 package com.example.expensetrackingsystem.ui.reports;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +74,7 @@ public class ItemizedReportFragment extends Fragment {
             public void onClick(View v) {
                 // Get the email
                 final String email = mAuth.getCurrentUser().getEmail();
+
                 // Format the date
                 DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
                 Date fromDate = null;
@@ -94,6 +94,7 @@ public class ItemizedReportFragment extends Fragment {
                         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                // Prepare data for the pie chart
                                 Map<String, Double> map = new HashMap<>();
                                 m_data = new ArrayList<>();
                                 queryDocumentSnapshots.getDocuments()
@@ -103,7 +104,10 @@ public class ItemizedReportFragment extends Fragment {
                                             final Double amount = document.getDouble("amount");
                                             map.put(expenseType, map.getOrDefault(expenseType, 0D) + amount);
                                         });
+
+                                // Aggregate data for the pie chart
                                 map.keySet().forEach(expenseType -> m_data.add(new ValueDataEntry(expenseType, map.get(expenseType))));
+
                                 // set the chart
                                 pie.data(m_data);
                             }

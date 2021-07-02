@@ -53,6 +53,7 @@ public class ExpenseEntryActivity extends AppCompatActivity {
 
         // Get the email of the current user.
         final String email = mAuth.getCurrentUser().getEmail();
+
         // Collect data in the settings database.
         db.collection("settings").document(email).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -78,6 +79,7 @@ public class ExpenseEntryActivity extends AppCompatActivity {
                     Date date = df.parse(m_txtDate.getText().toString());
                     timestamp = new Timestamp(date);
                 } catch (ParseException e) { return; }
+
                 // Get the expense
                 Expense expense = Expense.builder()
                         .amount(Double.parseDouble(m_txtAmount.getText().toString()))

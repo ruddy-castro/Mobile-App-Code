@@ -28,7 +28,8 @@ import java.util.Map;
 public class SettingsActivity extends AppCompatActivity {
 
     /**
-     * Hook method called when the activity is spawned
+     * Hook method called when the activity is spawned.
+     *
      * @param savedInstanceState the saved instance state
      */
     @Override
@@ -51,7 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
      */
     public static class SettingsFragment extends PreferenceFragmentCompat {
 
-        //Firestore
+        // Firestore
         private FirebaseAuth mAuth = FirebaseAuth.getInstance();
         private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -62,12 +63,18 @@ public class SettingsActivity extends AppCompatActivity {
                 "saving_goal", "savingGoal"
         );
 
+        // The expense type set to prevent duplicates
         private static Map<String, Boolean> m_expenseTypes;
+
+        // The preference for adding new expense type
         private EditTextPreference m_newExpenseTypePreference;
+
+        // The category for expense types
         PreferenceCategory m_expenseTypesCategory;
 
         /**
          * Create preferences.
+         *
          * @param savedInstanceState
          * @param rootKey
          */
@@ -75,6 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
             m_expenseTypesCategory = new PreferenceCategory(getContext());
+            m_expenseTypesCategory.setTitle(R.string.expense_types_header);
 
             // Extract preferences
             PreferenceManager preferenceManager = getPreferenceManager();
@@ -94,8 +102,6 @@ public class SettingsActivity extends AppCompatActivity {
 
             // Add expense type list as preferences
             PreferenceScreen preferenceScreen = preferenceManager.getPreferenceScreen();
-
-            m_expenseTypesCategory.setTitle(R.string.expense_types_header);
             preferenceScreen.addPreference(m_expenseTypesCategory);
 
             // Initialize preference values
@@ -107,6 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         /**
          * Add listener to preferences to change the database.
+         *
          * @param preference
          */
         private void addListenerToOnUpdatePreference(Preference preference) {
@@ -118,6 +125,7 @@ public class SettingsActivity extends AppCompatActivity {
                     final String email = mAuth.getCurrentUser().getEmail();
                     final String field = PREFERENCE_KEY_TO_DB_FIELD.get(preference.getKey());
 
+                    // Save to db
                     db.collection("settings").document(email).update(field, newVal)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -134,6 +142,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         /**
          * Initialize the values for preferences.
+         *
          * @param preferences
          */
         private void initializePreferencesValue(EditTextPreference... preferences) {
@@ -181,6 +190,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         /**
          * Edit/remove more expense type.
+         *
          * @param expenseType
          * @return
          */
@@ -231,13 +241,14 @@ public class SettingsActivity extends AppCompatActivity {
          * @return
          */
         EditTextPreference buildNewExpenseTypePreference() {
-
+            // Set basic fields for the new expense type preference
             final EditTextPreference preference = new EditTextPreference(getContext());
             preference.setPersistent(false);
             preference.setKey("new_expense_type");
             preference.setTitle("New Expense");
             preference.setOrder(0);
 
+            // Set the listener to add new expense type to the DB
             preference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -250,7 +261,7 @@ public class SettingsActivity extends AppCompatActivity {
                     // get the email of the current user
                     final String email = mAuth.getCurrentUser().getEmail();
 
-                    // update the database with ne type
+                    // update the database with new expense type
                     db.collection("settings").document(email).update(updates)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -266,7 +277,7 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
 
-            // Add preference
+            // Add preference to the expense type category
             m_expenseTypesCategory.addPreference(preference);
             return preference;
         }
